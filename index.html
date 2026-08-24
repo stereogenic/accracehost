@@ -37,14 +37,6 @@
             line-height: 1.6;
             overflow-x: hidden;
         }
-        
-        
-         
-        
-        
-        
-        
-        
 
         a {
             color: inherit;
@@ -958,6 +950,117 @@ nav a:hover {
                 text-align: center;
             }
         }
+        /* =========================================================
+           GALLERY / MEDIA SECTION
+        ========================================================= */
+
+        .media-section {
+            background: #0b0e12;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .media-grid {
+            margin-top: 55px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+        }
+
+        .media-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: 0.25s ease;
+        }
+
+        .media-card:hover {
+            border-color: #e537c7;
+        }
+
+        .media-card h3 {
+            padding: 12px 20px 10px 20px;
+            font-size: 14px;
+        }
+
+        .media-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+        }
+
+        .media-container img,
+        .media-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: none;
+        }
+
+        @media (max-width: 900px) {
+            .media-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* ================ MODAL ============================= */
+        .action-btn {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            padding: 6px 12px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            border-radius: 2px;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            border-color: #ff1e1e;
+            color: #ff1e1e;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(10, 10, 10, 0.9);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            position: relative;
+            max-width: 100%;
+            max-height: 85vh;
+            border: 1px solid #333;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 85vh;
+            object-fit: contain;
+            display: block;
+        }
+        .help-image {
+		    cursor: pointer;
+		    display: block;
+		    max-width: 100%;
+		    transition: transform 0.2s ease, opacity 0.2s ease;
+				}
 
     </style>
    
@@ -988,6 +1091,8 @@ nav a:hover {
 
 
         <nav>
+        	
+        	<a href="#media">Media</a>
 
             <a href="#features">
                 Features
@@ -1255,7 +1360,8 @@ nav a:hover {
 
     </section>
 
-
+    <!-- <button type="button" class="action-btn" id="helpBtn">SHOW HELP</button> -->
+    <!-- <img src="images/media-serversetup.webp" alt="Show Help" id="helpBtn" class="help-image"> -->
 
     <!-- =========================================================
          FEATURES
@@ -1388,6 +1494,104 @@ nav a:hover {
                     </p>
 
                 </article>
+
+            </div>
+
+        </div>
+
+    </section>
+    
+    <!-- =========================================================
+         SCREENSHOTS & VIDEO SECTION
+    ============================================================= -->
+
+    <section class="media-section" id="media">
+
+        <div class="container">
+
+            <div class="section-label">
+                See It In Action
+            </div>
+
+            <h2 class="section-title">
+                Screenshots & Video.
+            </h2>
+
+            <p class="section-description">
+                Take a quick look at the user interface and see how easily you can spin up your ACC server.
+            </p>
+
+            <div class="media-grid">
+            	
+         	
+
+                <!-- YouTube Video Card -->
+                <article class="media-card">
+                    <h3>App Walkthrough</h3>
+                    <div class="media-container">
+                        <!-- Replace YOUTUBE_VIDEO_ID with your actual YouTube ID -->
+                        <iframe src="https://www.youtube.com/embed/0qea8TbLTeo" 
+                                title="ACC Race Host Video" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </article>
+                
+                <!-- Screenshot 1 Card -->
+                <article class="media-card">
+                    <h3>ACC Race Host <i>(Overview)</i></h3>
+                    <div class="media-container">
+                        <!-- Replace with your screenshot path -->
+                     <img src="images/collapsed.webp" alt="Show Help" id="helpBtn" class="help-image">
+                    <!--  <a href="images/images/collapsed.webp" target="_blank"><img src="images/collapsed.webp" id="helpBtn" alt="ACC Race Host Dashboard Screenshot"></a> -->
+                    </div>
+                </article>
+                
+                
+
+                <!-- Screenshot 2 Card -->
+                <article class="media-card">
+                    <h3>Server Setup</h3>
+                    <div class="media-container">
+                        <!-- Replace with your screenshot path -->
+                        <img src="images/media-serversetup.webp" alt="Show server setup" id="helpBtn1" class="help-image">
+                        <!-- <a href="images/media-serversetup.webp" target="_blank"><img src="images/media-serversetup.webp" alt="ACC Race Host Dashboard Screenshot"></a> -->
+                    </div>
+                </article>
+                
+                <!-- Screenshot 3 Card -->
+                <article class="media-card">
+                    <h3>Track Setup</h3>
+                    <div class="media-container">
+                        <!-- Replace with your screenshot path -->
+                        <img src="images/media-tracksetup.webp" alt="Show server setup" id="helpBtn2" class="help-image">
+                        <!-- <a href="images/media-tracksetup.webp" target="_blank"><img src="images/media-tracksetup.webp" alt="ACC Race Host Dashboard Screenshot"></a> -->
+                    </div>
+                </article>
+                
+                
+                
+                <!-- Screenshot 4 Card -->
+                <article class="media-card">
+                    <h3>Weather Simulator</h3>
+                    <div class="media-container">
+                        <!-- Replace with your screenshot path -->
+                        <img src="images/media-weathersim.webp" alt="Show server setup" id="helpBtn3" class="help-image">
+                        <!-- <a href="images/media-weathersim.webp" target="_blank"><img src="images/media-weathersim.webp" alt="ACC Race Host Dashboard Screenshot"></a> -->
+                    </div>
+                </article>
+                
+                <!-- Screenshot 5 Card -->
+                <article class="media-card">
+                    <h3>Change Themes</h3>
+                    <div class="media-container">
+                        <!-- Replace with your screenshot path -->
+                        <img src="images/media-theme.webp" alt="Show server setup" id="helpBtn4" class="help-image">
+                        <!-- <a href="images/media-theme.webp" target="_blank"><img src="images/media-theme.webp" alt="ACC Race Host Dashboard Screenshot"></a> -->
+                    </div>
+                </article>
+                
 
             </div>
 
@@ -1569,6 +1773,51 @@ nav a:hover {
 
 
 <!-- =============================================================
+     MODALS
+============================================================= -->
+    <div class="modal-overlay" id="helpModal">
+        <div style="width: 100%; max-width: 1100px; display: flex; justify-content: flex-end; margin-bottom: 8px;">
+            <button type="button" class="action-btn" id="closeHelpBtn">✕ CLOSE</button>
+        </div>
+        <div class="modal-content">
+            <img src="images/collapsed.webp">
+        </div>
+    </div>
+    <div class="modal-overlay" id="helpModal1">
+        <div style="width: 100%; max-width: 1100px; display: flex; justify-content: flex-end; margin-bottom: 8px;">
+            <button type="button" class="action-btn" id="closeHelpBtn1">✕ CLOSE</button>
+        </div>
+        <div class="modal-content">
+            <img src="images/media-serversetup.webp">
+        </div>
+    </div>
+    <div class="modal-overlay" id="helpModal2">
+        <div style="width: 100%; max-width: 1100px; display: flex; justify-content: flex-end; margin-bottom: 8px;">
+            <button type="button" class="action-btn" id="closeHelpBtn2">✕ CLOSE</button>
+        </div>
+        <div class="modal-content">
+            <img src="images/media-tracksetup.webp">
+        </div>
+    </div>
+    <div class="modal-overlay" id="helpModal3">
+        <div style="width: 100%; max-width: 1100px; display: flex; justify-content: flex-end; margin-bottom: 8px;">
+            <button type="button" class="action-btn" id="closeHelpBtn3">✕ CLOSE</button>
+        </div>
+        <div class="modal-content">
+            <img src="images/media-weathersim.webp">
+        </div>
+    </div>
+    <div class="modal-overlay" id="helpModal4">
+        <div style="width: 100%; max-width: 1100px; display: flex; justify-content: flex-end; margin-bottom: 8px;">
+            <button type="button" class="action-btn" id="closeHelpBtn4">✕ CLOSE</button>
+        </div>
+        <div class="modal-content">
+            <img src="images/media-theme.webp">
+        </div>
+    </div>
+    
+
+<!-- =============================================================
      FOOTER
 ============================================================= -->
 
@@ -1591,6 +1840,32 @@ nav a:hover {
     </div>
 
 </footer>
+
+<script>
+	const helpModalEl = document.getElementById('helpModal');
+	const helpModalEl1 = document.getElementById('helpModal1');
+	const helpModalEl2 = document.getElementById('helpModal2');
+	const helpModalEl3 = document.getElementById('helpModal3');
+	const helpModalEl4 = document.getElementById('helpModal4');
+	
+  document.getElementById('helpBtn').addEventListener('click', () => { helpModalEl.style.display = 'flex'; });
+  document.getElementById('helpBtn1').addEventListener('click', () => { helpModalEl1.style.display = 'flex'; });
+  document.getElementById('helpBtn2').addEventListener('click', () => { helpModalEl2.style.display = 'flex'; });
+  document.getElementById('helpBtn3').addEventListener('click', () => { helpModalEl3.style.display = 'flex'; });
+  document.getElementById('helpBtn4').addEventListener('click', () => { helpModalEl4.style.display = 'flex'; });
+  
+  document.getElementById('closeHelpBtn').addEventListener('click', () => { helpModalEl.style.display = 'none'; });
+  document.getElementById('closeHelpBtn1').addEventListener('click', () => { helpModalEl1.style.display = 'none'; });
+  document.getElementById('closeHelpBtn2').addEventListener('click', () => { helpModalEl2.style.display = 'none'; });
+  document.getElementById('closeHelpBtn3').addEventListener('click', () => { helpModalEl3.style.display = 'none'; });
+  document.getElementById('closeHelpBtn4').addEventListener('click', () => { helpModalEl4.style.display = 'none'; });
+  
+  helpModalEl.addEventListener('click', () => { helpModalEl.style.display = 'none'; });
+  helpModalEl1.addEventListener('click', () => { helpModalEl1.style.display = 'none'; });
+  helpModalEl2.addEventListener('click', () => { helpModalEl2.style.display = 'none'; });
+  helpModalEl3.addEventListener('click', () => { helpModalEl3.style.display = 'none'; });
+  helpModalEl4.addEventListener('click', () => { helpModalEl4.style.display = 'none'; });
+</script>
 
 
 </body>
