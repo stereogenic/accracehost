@@ -17,41 +17,41 @@
 
   <style>
     :root {
-      --bg: #05060b;
-      --card: #0a0d14;
-      --text: #dbe7f5;
-      --accent: #5b8cff;
-      --accent-hover: #7651d8;
-      --border: #202a3a;
-      --bg-black: #020308;
-      --bg-panel: #0b101a;
-      --bg-input: #080c14;
-      --border-neutral: #1c2635;
-      --border-hover: #5b8cff;
-      --text-main: #f4f8ff;
-      --text-muted: #7f91a8;
-      --accent-red: #ff27d9;
-      --accent-red-hover: #ff5be7;
-      --accent-cyan: #5b8cff;
+      --bg: #070913;
+      --card: #0e1422;
+      --text: #e2eeff;
+      --accent: #4b8cff;
+      --accent-hover: #ff27ea;
+      --border: #2a3d59;
+      --bg-black: #03050a;
+      --bg-panel: #101828;
+      --bg-input: #0b111e;
+      --border-neutral: #293e5c;
+      --border-hover: #ff27ea;
+      --text-main: #ffffff;
+      --text-muted: #9fb5d1;
+      --accent-red: #ff27ea;
+      --accent-red-hover: #ff5bf3;
+      --accent-cyan: #38bdf8;
       --accent-emerald: #39ffb6;
-      --cyber-cyan: #4b8cff;
-      --cyber-blue: #3867ff;
-      --cyber-violet: #8b5cff;
-      --cyber-pink: #ff27c8;
+      --cyber-cyan: #38bdf8;
+      --cyber-blue: #4b8cff;
+      --cyber-violet: #a855f7;
+      --cyber-pink: #ff27ea;
       --cyber-green: #39ffb6;
-      --cyber-line: rgba(0, 229, 255, 0.28);
+      --cyber-line: rgba(56, 189, 248, 0.4);
     }
 
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       margin: 0;
       padding: 20px 15px;
-      background-color: #05060b;
+      background-color: #070913;
       background-image:
-        linear-gradient(rgba(91,140,255,0.025) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(124,77,255,0.025) 1px, transparent 1px),
-        radial-gradient(circle at 50% -10%, rgba(91,140,255,0.12), transparent 38%),
-        radial-gradient(circle at 100% 80%, rgba(255,39,217,0.07), transparent 35%);
+        linear-gradient(rgba(75,140,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,39,234,0.04) 1px, transparent 1px),
+        radial-gradient(circle at 50% -10%, rgba(75,140,255,0.22), transparent 45%),
+        radial-gradient(circle at 100% 80%, rgba(255,39,234,0.14), transparent 40%);
       background-size: 32px 32px, 32px 32px, auto, auto;
       background-attachment: fixed;
       color: var(--text);
@@ -66,18 +66,18 @@
     }
 
     ::-webkit-scrollbar { width: 8px; height: 10px; }
-    ::-webkit-scrollbar-track { background: #050811; }
-    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #17364d, #26315d); border: 1px solid #31506d; border-radius: 2px; }
-    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, #5b8cff, #7651d8 55%, #ff27d9); }
+    ::-webkit-scrollbar-track { background: #070913; }
+    ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #254975, #6b21a8); border: 1px solid #4b8cff; border-radius: 2px; }
+    ::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, #38bdf8, #a855f7 55%, #ff27ea); }
 
-    a { color: #6f8dff; text-decoration: none; text-shadow: 0 0 8px rgba(91,140,255,0.15); }
-    a:hover { color: var(--cyber-pink); }
+    a { color: #38bdf8; text-decoration: none; text-shadow: 0 0 10px rgba(56,189,248,0.3); }
+    a:hover { color: var(--cyber-pink); text-shadow: 0 0 12px rgba(255,39,234,0.5); }
 
     .card, .script-controls, .telemetry-tile, .modal-box {
-      background: linear-gradient(135deg, rgba(12,18,30,0.97), rgba(5,8,15,0.97));
-      border: 1px solid #20334a;
-      border-radius: 3px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.025), 0 0 0 1px rgba(91,140,255,0.025), 0 8px 28px rgba(0,0,0,0.38);
+      background: linear-gradient(135deg, rgba(16,24,40,0.97), rgba(8,13,24,0.97));
+      border: 1px solid #2a4369;
+      border-radius: 4px;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 0 0 1px rgba(75,140,255,0.08), 0 10px 30px rgba(0,0,0,0.5);
       position: relative;
     }
 
@@ -86,10 +86,11 @@
       position: absolute;
       top: -1px;
       left: 18px;
-      right: 55%;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, #7651d8, #ff27c8, transparent);
-      opacity: 0.9;
+      right: 45%;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #a855f7, #ff27ea, transparent);
+      opacity: 1;
+      box-shadow: 0 0 10px #ff27ea;
     }
 
     h1 {
@@ -102,21 +103,22 @@
       font-style: italic;
       line-height: 1;
       letter-spacing: 0.04em;
-      text-shadow: 0 0 12px rgba(91,140,255,0.22);
+      text-shadow: 0 0 16px rgba(75,140,255,0.4);
     }
 
     label {
       font-size: 11px;
-      color: var(--text-muted);
+      color: #9fb5d1;
       margin-bottom: 4px;
       text-transform: uppercase;
       letter-spacing: 0.12em;
       display: block;
+      font-weight: 600;
     }
 
     input, select {
-      background: #090e17;
-      border: 1px solid #26384f;
+      background: #0b111e;
+      border: 1px solid #33507d;
       color: white;
       padding: 4px 8px;
       border-radius: 3px;
@@ -127,53 +129,56 @@
       transition: border-color 0.18s ease, box-shadow 0.18s ease;
     }
 
-    input:hover, select:hover { border-color: #3d5f82; }
-    input:focus, select:focus { border-color: #7651d8; outline: none; box-shadow: 0 0 0 1px rgba(91,140,255,0.18), 0 0 14px rgba(91,140,255,0.12); }
+    input:hover, select:hover { border-color: #38bdf8; }
+    input:focus, select:focus { border-color: #ff27ea; outline: none; box-shadow: 0 0 0 1px rgba(255,39,234,0.3), 0 0 16px rgba(255,39,234,0.25); }
 
     button {
-      padding: 6px 12px;
-      background: var(--accent);
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
       color: white;
-      border: none;
+      border: 1px solid #60a5fa;
       border-radius: 3px;
       cursor: pointer;
       font-weight: bold;
       font-size: 12px;
       transition: all 0.18s ease;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 
     button:hover {
-      background: linear-gradient(90deg, #5b8cff, #7651d8 55%, #ff27d9);
-      box-shadow: 0 0 18px rgba(91,140,255,0.24);
+      background: linear-gradient(90deg, #38bdf8, #a855f7 55%, #ff27ea);
+      border-color: #ff27ea;
+      box-shadow: 0 0 20px rgba(255,39,234,0.4);
       transform: translateY(-1px);
     }
 
     button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
     .track-btn {
-      background: linear-gradient(135deg, rgba(12,18,30,0.97), rgba(5,8,15,0.97));
-      border: 1px solid #20334a;
+      background: linear-gradient(135deg, rgba(18,28,48,0.97), rgba(8,13,24,0.97));
+      border: 1px solid #2d4a75;
       padding: 18px 20px;
       text-align: left;
       cursor: pointer;
-      height: 100px;
+      min-height: 100px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       transition: all 0.15s ease;
-      border-radius: 3px;
+      border-radius: 4px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     .track-btn:hover {
-      border-color: #ff27c8;
-      background: linear-gradient(135deg, rgba(25,17,51,0.97), rgba(10,13,20,0.97));
+      border-color: #ff27ea;
+      background: linear-gradient(135deg, rgba(35,20,58,0.97), rgba(12,18,32,0.97));
       transform: translateY(-2px);
-      box-shadow: 0 0 18px rgba(255,39,200,0.15);
+      box-shadow: 0 0 22px rgba(255,39,234,0.3);
     }
 
     table { width: 100%; border-collapse: collapse; text-align: left; }
-    th { border-bottom: 1px solid #26384f; color: #7890ab; padding: 16px 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
-    td { border-bottom: 1px solid #172536; padding: 16px 20px; }
-    tr:hover td { background: rgba(91,140,255,0.025); }
+    th { border-bottom: 1px solid #33507d; color: #38bdf8; padding: 16px 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; text-shadow: 0 0 8px rgba(56,189,248,0.3); }
+    td { border-bottom: 1px solid #1c2d47; padding: 16px 20px; }
+    tr:hover td { background: rgba(75,140,255,0.06); }
   </style>
 </head>
 <body style="margin: 0;">
@@ -221,10 +226,10 @@
     function SectorSplitsDisplay({ splits, align = 'left' }) {
       if (!splits || !Array.isArray(splits) || splits.length === 0) return null;
       return (
-        <div style={{ display: 'flex', justifyContent: align === 'right' ? 'flex-end' : 'flex-start', gap: '5px', flexWrap: 'wrap', marginTop: '4px' }}>
+        <div style={{ display: 'flex', justifyContent: align === 'right' ? 'flex-end' : 'flex-start', gap: '5px', flexWrap: 'wrap', marginTop: '6px' }}>
           {splits.map((splitMs, idx) => (
-            <span key={idx} style={{ backgroundColor: '#05060b', border: '1px solid #7651d8', color: '#5b8cff', fontSize: '10px', fontFamily: 'monospace', padding: '1px 5px', borderRadius: '2px', textShadow: '0 0 6px rgba(91,140,255,0.2)' }}>
-              <span style={{ color: '#7f91a8', fontSize: '9px', marginRight: '3px' }}>S{idx + 1}</span>
+            <span key={idx} style={{ backgroundColor: '#0b111e', border: '1px solid #a855f7', color: '#38bdf8', fontSize: '10px', fontFamily: 'monospace', padding: '2px 6px', borderRadius: '2px', textShadow: '0 0 8px rgba(56,189,248,0.4)', fontWeight: 'bold' }}>
+              <span style={{ color: '#9fb5d1', fontSize: '9px', marginRight: '3px' }}>S{idx + 1}</span>
               {formatSectorTime(splitMs)}
             </span>
           ))}
@@ -252,20 +257,20 @@
     };
 
     const CLASS_COLORS = {
-      'GT3': { bg: 'rgba(255, 39, 217, 0.1)', border: '#ff27d9', text: '#ff5be7' },
-      'GT4': { bg: 'rgba(91, 140, 255, 0.1)', border: '#5b8cff', text: '#93c5fd' },
-      'GT2': { bg: 'rgba(57, 255, 182, 0.1)', border: '#39ffb6', text: '#6ee7b7' },
-      'CUP': { bg: 'rgba(245, 158, 11, 0.1)', border: '#f59e0b', text: '#fde047' },
-      'ST': { bg: 'rgba(139, 92, 246, 0.1)', border: '#8b5cf6', text: '#c4b5fd' },
-      'CH': { bg: 'rgba(236, 72, 153, 0.1)', border: '#ec4899', text: '#fbcfe8' },
-      'TC': { bg: 'rgba(107, 114, 128, 0.1)', border: '#6b7280', text: '#d1d5db' }
+      'GT3': { bg: 'rgba(255, 39, 234, 0.15)', border: '#ff27ea', text: '#ff70f2' },
+      'GT4': { bg: 'rgba(56, 189, 248, 0.15)', border: '#38bdf8', text: '#7dd3fc' },
+      'GT2': { bg: 'rgba(57, 255, 182, 0.15)', border: '#39ffb6', text: '#6ee7b7' },
+      'CUP': { bg: 'rgba(250, 204, 21, 0.15)', border: '#facc15', text: '#fde047' },
+      'ST': { bg: 'rgba(168, 85, 247, 0.15)', border: '#a855f7', text: '#d8b4fe' },
+      'CH': { bg: 'rgba(244, 63, 94, 0.15)', border: '#f43f5e', text: '#fda4af' },
+      'TC': { bg: 'rgba(156, 163, 175, 0.15)', border: '#9ca3af', text: '#e5e7eb' }
     };
 
     function ClassBadge({ carModel }) {
       const cls = CAR_CLASSES[String(carModel)] || 'OTHERS'; 
-      const colors = CLASS_COLORS[cls] || { bg: 'rgba(17, 24, 39, 0.5)', border: '#374151', text: '#9ca3af' };
+      const colors = CLASS_COLORS[cls] || { bg: 'rgba(31, 41, 55, 0.6)', border: '#4b5563', text: '#d1d5db' };
       return (
-        <span style={{ display: 'inline-block', padding: '2px 6px', fontSize: '10px', fontWeight: 'bold', fontFamily: 'monospace', backgroundColor: colors.bg, border: `1px solid ${colors.border}`, color: colors.text, borderRadius: '3px', marginRight: '8px', textTransform: 'uppercase', verticalAlign: 'middle' }}>
+        <span style={{ display: 'inline-block', padding: '2px 7px', fontSize: '10px', fontWeight: 'bold', fontFamily: 'monospace', backgroundColor: colors.bg, border: `1px solid ${colors.border}`, color: colors.text, borderRadius: '3px', marginRight: '8px', textTransform: 'uppercase', verticalAlign: 'middle', textShadow: '0 0 6px rgba(255,255,255,0.2)' }}>
           {cls}
         </span>
       );
@@ -344,10 +349,10 @@
       }, [selectedTrack, selectedClass, selectedWeather]);
 
       if (loading && uniqueTracks.length === 0) {
-        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#05060b', color: '#5b8cff' }}><code>🏁 LOADING TELEMETRY ENGINE...</code></div>;
+        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#070913', color: '#38bdf8' }}><code>🏁 LOADING TELEMETRY ENGINE...</code></div>;
       }
       if (error) {
-        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#05060b', color: '#ff27d9' }}><code>🏁 RACE CONTROL ERROR: {error}</code></div>;
+        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#070913', color: '#ff27ea' }}><code>🏁 RACE CONTROL ERROR: {error}</code></div>;
       }
 
       const seenDrivers = new Set();
@@ -379,23 +384,23 @@
 
       return (
         <div id="app">
-          <div className="card" style={{ padding: '22px 28px', marginBottom: '25px', borderLeft: '4px solid #ff27d9' }}>
+          <div className="card" style={{ padding: '22px 28px', marginBottom: '25px', borderLeft: '5px solid #ff27ea' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <div>
                   <h1>
-                    ACC <span style={{ color: '#5b8cff', textShadow: '0 0 10px rgba(91,140,255,0.3)' }}>RACE HOST</span>
+                    ACC <span style={{ color: '#38bdf8', textShadow: '0 0 14px rgba(56,189,248,0.5)' }}>RACE HOST</span>
                   </h1>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
-                    <span style={{ height: '7px', width: '7px', backgroundColor: '#39ffb6', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 8px #39ffb6' }}></span>
-                    <span style={{ fontSize: '12px', fontWeight: 'bold', fontFamily: 'monospace', color: '#ff27d9', letterSpacing: '0.22em', textShadow: '0 0 8px rgba(255,39,217,0.3)' }}>HOTLAP LIVE LEADERBOARD</span>
+                    <span style={{ height: '8px', width: '8px', backgroundColor: '#39ffb6', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 10px #39ffb6' }}></span>
+                    <span style={{ fontSize: '12px', fontWeight: 'bold', fontFamily: 'monospace', color: '#ff27ea', letterSpacing: '0.22em', textShadow: '0 0 10px rgba(255,39,234,0.5)' }}>HOTLAP LIVE LEADERBOARD</span>
                   </div>
                 </div>
               </div>
               
               {selectedTrack !== '' && (
                 <div style={{ display: 'flex', alignItems: 'flex-end', width: '100%', flexWrap: 'wrap', gap: '15px' }}>
-                  <button onClick={() => setSelectedTrack('')} style={{ marginRight: 'auto', backgroundColor: '#0b101a', color: '#5b8cff', border: '1px solid #5b8cff' }}>
+                  <button onClick={() => setSelectedTrack('')} style={{ marginRight: 'auto', backgroundColor: '#101828', color: '#38bdf8', border: '1px solid #38bdf8' }}>
                     ← CHANGE TRACK
                   </button>
                   <div>
@@ -428,15 +433,15 @@
           </div>
 
           {selectedTrack === '' ? (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '15px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '16px', width: '100%', boxSizing: 'border-box' }}>
               {uniqueTracks.map(trackKey => (
                 <button 
                   key={trackKey} 
                   onClick={() => setSelectedTrack(trackKey)} 
                   className="track-btn"
                 >
-                  <span style={{ fontSize: '10px', color: '#5b8cff', fontFamily: 'monospace', letterSpacing: '0.1em' }}>CIRCUIT</span>
-                  <span style={{ fontSize: '17px', fontWeight: 'bold', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase' }}>
+                  <span style={{ fontSize: '10px', color: '#38bdf8', fontFamily: 'monospace', letterSpacing: '0.12em', fontWeight: 'bold' }}>CIRCUIT</span>
+                  <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase', textShadow: '0 0 8px rgba(255,255,255,0.2)' }}>
                     {TRACK_NAMES[trackKey.toLowerCase()] || trackKey.toUpperCase()}
                   </span>
                 </button>
@@ -449,30 +454,30 @@
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '30px' }}>
                   {baselineUniqueLaps.slice(0, 3).map((lap, i) => {
                     const positions = [
-                      { badge: '#5b8cff', text: '🥇 P1 INTERVAL LEADER', border: '#5b8cff', glow: 'rgba(91, 140, 255, 0.2)' },
-                      { badge: '#ff27d9', text: '🥈 P2 PURSUING', border: '#ff27d9', glow: 'rgba(255, 39, 217, 0.15)' },
-                      { badge: '#8b5cf6', text: '🥉 P3 PURSUING', border: '#8b5cf6', glow: 'rgba(139, 92, 246, 0.15)' }
+                      { badge: '#38bdf8', text: '🥇 P1 INTERVAL LEADER', border: '#38bdf8', glow: 'rgba(56, 189, 248, 0.3)' },
+                      { badge: '#ff27ea', text: '🥈 P2 PURSUING', border: '#ff27ea', glow: 'rgba(255, 39, 234, 0.3)' },
+                      { badge: '#a855f7', text: '🥉 P3 PURSUING', border: '#a855f7', glow: 'rgba(168, 85, 247, 0.3)' }
                     ][i];
                     return (
-                      <div key={`podium-${lap.id}`} className="card" style={{ border: `1px solid ${positions.border}`, padding: '20px', boxShadow: `0 0 20px ${positions.glow}` }}>
-                        <div style={{ color: positions.badge, fontSize: '11px', fontFamily: 'monospace', marginBottom: '10px', letterSpacing: '0.12em' }}>{positions.text}</div>
-                        <div onClick={() => setActiveDriverModal(lap.driver_name)} style={{ fontSize: '22px', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase', cursor: 'pointer', transition: 'color 0.2s' }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#5b8cff'}
+                      <div key={`podium-${lap.id}`} className="card" style={{ border: `1px solid ${positions.border}`, padding: '20px', boxShadow: `0 0 25px ${positions.glow}` }}>
+                        <div style={{ color: positions.badge, fontSize: '11px', fontFamily: 'monospace', marginBottom: '10px', letterSpacing: '0.12em', fontWeight: 'bold' }}>{positions.text}</div>
+                        <div onClick={() => setActiveDriverModal(lap.driver_name)} style={{ fontSize: '22px', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase', cursor: 'pointer', transition: 'color 0.2s', textShadow: '0 0 8px rgba(255,255,255,0.2)' }}
+                          onMouseEnter={(e) => e.currentTarget.style.color = '#38bdf8'}
                           onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
                         >
                           {lap.driver_name}
                         </div>
-                        <div style={{ fontSize: '12px', color: '#7f91a8', margin: '4px 0 10px 0', display: 'flex', alignItems: 'center' }}>
+                        <div style={{ fontSize: '12px', color: '#9fb5d1', margin: '4px 0 10px 0', display: 'flex', alignItems: 'center' }}>
                           <ClassBadge carModel={lap.car_model} />
                           {CAR_MODELS[lap.car_model] || `Car ID: ${lap.car_model}`}
                         </div>
-                        <div style={{ fontSize: '11px', color: '#5b8cff', fontFamily: 'monospace', marginBottom: '10px' }}>
+                        <div style={{ fontSize: '11px', color: '#38bdf8', fontFamily: 'monospace', marginBottom: '10px', fontWeight: 'bold' }}>
                           TRACK: {TRACK_NAMES[lap.track?.toLowerCase()] || lap.track?.toUpperCase()}
                         </div>
                         <div style={{ marginBottom: '14px' }}>
                           <SectorSplitsDisplay splits={lap.best_splits} />
                         </div>
-                        <div style={{ fontSize: '26px', fontFamily: 'monospace', color: '#ffffff', textAlign: 'right', backgroundColor: '#05060b', padding: '6px 12px', border: '1px solid #202a3a', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', textShadow: '0 0 10px rgba(255,255,255,0.1)' }}>
+                        <div style={{ fontSize: '26px', fontFamily: 'monospace', color: '#ffffff', textAlign: 'right', backgroundColor: '#070913', padding: '6px 12px', border: '1px solid #2d4a75', display: 'flex', alignItems: 'center', justifyContent: 'flex-end', textShadow: '0 0 12px rgba(255,255,255,0.25)' }}>
                           <WeatherBadge wetlap={lap.wetlap} />
                           {formatLapTime(lap.best_lap_ms)}
                         </div>
@@ -499,23 +504,23 @@
                       const absoluteIndex = startIndex + index;
                       const isActualFirst = lap.displayPosition === 1;
                       return (
-                        <tr key={lap.id} style={{ backgroundColor: isActualFirst ? 'rgba(91, 140, 255, 0.04)' : 'transparent' }}>
-                          <td style={{ color: isActualFirst ? '#5b8cff' : '#8b5cf6', fontSize: '16px', fontStyle: 'italic', fontWeight: 'bold', verticalAlign: 'top' }}>
+                        <tr key={lap.id} style={{ backgroundColor: isActualFirst ? 'rgba(56, 189, 248, 0.08)' : 'transparent' }}>
+                          <td style={{ color: isActualFirst ? '#38bdf8' : '#a855f7', fontSize: '16px', fontStyle: 'italic', fontWeight: 'bold', verticalAlign: 'top', textShadow: '0 0 8px rgba(56,189,248,0.3)' }}>
                             {lap.displayPosition.toString().padStart(2, '0')}
                           </td>
                           <td style={{ fontStyle: 'italic', verticalAlign: 'top' }}>
-                            <span onClick={() => setActiveDriverModal(lap.driver_name)} style={{ color: '#ffffff', textTransform: 'uppercase', fontSize: '12px', cursor: 'pointer', transition: 'color 0.2s' }}
-                              onMouseEnter={(e) => e.currentTarget.style.color = '#5b8cff'}
+                            <span onClick={() => setActiveDriverModal(lap.driver_name)} style={{ color: '#ffffff', textTransform: 'uppercase', fontSize: '12px', cursor: 'pointer', transition: 'color 0.2s', fontWeight: 'bold' }}
+                              onMouseEnter={(e) => e.currentTarget.style.color = '#38bdf8'}
                               onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
                             >
                               {lap.driver_name}
                             </span>
                           </td>
-                          <td style={{ color: '#a0afc0', fontSize: '13px', verticalAlign: 'top' }}>
+                          <td style={{ color: '#cbd5e1', fontSize: '13px', verticalAlign: 'top' }}>
                             <ClassBadge carModel={lap.car_model} />{CAR_MODELS[lap.car_model] || `Car ID: ${lap.car_model}`}
                           </td>
-                          <td style={{ textAlign: 'right', color: isActualFirst ? '#5b8cff' : '#ff27d9', fontFamily: 'monospace', verticalAlign: 'top' }}>{formatDelta(lap.best_lap_ms, p1Time)}</td>
-                          <td style={{ textAlign: 'right', fontFamily: 'monospace', fontSize: '16px', color: isActualFirst ? '#5b8cff' : '#ffffff', verticalAlign: 'top' }}>
+                          <td style={{ textAlign: 'right', color: isActualFirst ? '#38bdf8' : '#ff27ea', fontFamily: 'monospace', verticalAlign: 'top', fontWeight: 'bold' }}>{formatDelta(lap.best_lap_ms, p1Time)}</td>
+                          <td style={{ textAlign: 'right', fontFamily: 'monospace', fontSize: '16px', color: isActualFirst ? '#38bdf8' : '#ffffff', verticalAlign: 'top', fontWeight: 'bold' }}>
                             <div><WeatherBadge wetlap={lap.wetlap} />{formatLapTime(lap.best_lap_ms)}</div>
                             <SectorSplitsDisplay splits={lap.best_splits} align="right" />
                           </td>
@@ -527,8 +532,8 @@
 
                 {/* PAGINATION CONTROLS */}
                 {totalPages > 1 && (
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', backgroundColor: '#03040a', borderTop: '1px solid #202a3a', fontFamily: 'monospace', fontSize: '12px' }}>
-                    <div style={{ color: '#7f91a8' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', backgroundColor: '#05070f', borderTop: '1px solid #2d4a75', fontFamily: 'monospace', fontSize: '12px' }}>
+                    <div style={{ color: '#9fb5d1' }}>
                       SHOWING {startIndex + 1} - {Math.min(startIndex + ITEMS_PER_PAGE, finalFilteredLaps.length)} OF {finalFilteredLaps.length} DRIVERS
                     </div>
                     <div style={{ display: 'flex', gap: '8px' }}>
@@ -538,7 +543,7 @@
                       >
                         PREV
                       </button>
-                      <span style={{ padding: '6px 10px', color: '#ffffff' }}>PAGE {currentPage} OF {totalPages}</span>
+                      <span style={{ padding: '6px 10px', color: '#ffffff', fontWeight: 'bold' }}>PAGE {currentPage} OF {totalPages}</span>
                       <button 
                         onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} 
                         disabled={currentPage === totalPages}
@@ -554,28 +559,28 @@
 
           {/* DRIVER PROFILE MODAL */}
           {driverStats && (
-            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(5, 6, 11, 0.85)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' }} onClick={() => setActiveDriverModal(null)}>
-              <div className="card" style={{ padding: '28px', maxWidth: '480px', width: '100%', borderTop: '4px solid #5b8cff', boxShadow: '0 0 35px rgba(91, 140, 255, 0.25)' }} onClick={(e) => e.stopPropagation()}>
+            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(3, 5, 10, 0.85)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' }} onClick={() => setActiveDriverModal(null)}>
+              <div className="card" style={{ padding: '28px', maxWidth: '480px', width: '100%', borderTop: '4px solid #38bdf8', boxShadow: '0 0 40px rgba(56, 189, 248, 0.35)' }} onClick={(e) => e.stopPropagation()}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
                   <div>
-                    <div style={{ fontSize: '11px', color: '#5b8cff', fontFamily: 'monospace', letterSpacing: '0.15em' }}>DRIVER TELEMETRY PROFILE</div>
+                    <div style={{ fontSize: '11px', color: '#38bdf8', fontFamily: 'monospace', letterSpacing: '0.15em', fontWeight: 'bold' }}>DRIVER TELEMETRY PROFILE</div>
                     <h2 style={{ margin: '4px 0 0 0', fontSize: '26px', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase' }}>{driverStats.name}</h2>
                   </div>
-                  <button onClick={() => setActiveDriverModal(null)} style={{ background: 'transparent', color: '#ff27d9', border: 'none', fontSize: '20px', cursor: 'pointer', boxShadow: 'none' }}>✕</button>
+                  <button onClick={() => setActiveDriverModal(null)} style={{ background: 'transparent', color: '#ff27ea', border: 'none', fontSize: '20px', cursor: 'pointer', boxShadow: 'none' }}>✕</button>
                 </div>
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-                  <div style={{ backgroundColor: '#05060b', padding: '12px', border: '1px solid #202a3a' }}>
-                    <div style={{ fontSize: '10px', color: '#7f91a8', fontFamily: 'monospace' }}>POSITION</div>
-                    <div style={{ fontSize: '20px', color: '#5b8cff', fontFamily: 'monospace', fontWeight: 'bold' }}>P{driverStats.position}</div>
+                  <div style={{ backgroundColor: '#070913', padding: '12px', border: '1px solid #2d4a75' }}>
+                    <div style={{ fontSize: '10px', color: '#9fb5d1', fontFamily: 'monospace' }}>POSITION</div>
+                    <div style={{ fontSize: '20px', color: '#38bdf8', fontFamily: 'monospace', fontWeight: 'bold' }}>P{driverStats.position}</div>
                   </div>
-                  <div style={{ backgroundColor: '#05060b', padding: '12px', border: '1px solid #202a3a' }}>
-                    <div style={{ fontSize: '10px', color: '#7f91a8', fontFamily: 'monospace' }}>BEST LAP</div>
-                    <div style={{ fontSize: '20px', color: '#ffffff', fontFamily: 'monospace', display: 'flex', alignItems: 'center' }}>
+                  <div style={{ backgroundColor: '#070913', padding: '12px', border: '1px solid #2d4a75' }}>
+                    <div style={{ fontSize: '10px', color: '#9fb5d1', fontFamily: 'monospace' }}>BEST LAP</div>
+                    <div style={{ fontSize: '20px', color: '#ffffff', fontFamily: 'monospace', display: 'flex', alignItems: 'center', fontWeight: 'bold' }}>
                       <WeatherBadge wetlap={driverStats.wetlap} />{formatLapTime(driverStats.bestLapMs)}
                     </div>
                   </div>
                 </div>
-                <button onClick={() => setActiveDriverModal(null)} style={{ width: '100%', backgroundColor: '#0b101a', color: '#5b8cff', border: '1px solid #5b8cff' }}>CLOSE PROFILE</button>
+                <button onClick={() => setActiveDriverModal(null)} style={{ width: '100%', backgroundColor: '#101828', color: '#38bdf8', border: '1px solid #38bdf8' }}>CLOSE PROFILE</button>
               </div>
             </div>
           )}
