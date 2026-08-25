@@ -68,6 +68,43 @@
         </div>
       );
     }
+    
+    // Parses session_id into date, time, and type
+		function parseSessionId(sessionId) {
+		  if (!sessionId) return { infoStr: '', type: '' };
+		  
+		  const parts = sessionId.split('_');
+		  if (parts.length < 3) return { infoStr: '', type: '' };
+
+		  const [datePart, timePart, remaining] = parts;
+		  
+		  const day = datePart.substring(4, 6);
+		  const month = datePart.substring(2, 4);
+		  const year = `20${datePart.substring(0, 2)}`;
+		  const formattedDate = `${day}/${month}/${year}`;
+
+		  const hours = timePart.substring(0, 2);
+		  const minutes = timePart.substring(2, 4);
+		  const formattedTime = `${hours}:${minutes}`;
+
+		  const typeLetter = remaining.split('-')[0];
+		  let sessionType = typeLetter;
+
+		  if (/^Q\d*$/.test(typeLetter)) {
+		    sessionType = 'Q';
+		  } else if (/^R\d*$/.test(typeLetter)) {
+		    sessionType = 'R';
+		  } else if (/^FP\d*$/.test(typeLetter)) {
+		    sessionType = 'Q';
+		  }
+
+		  return {
+		    infoStr: `${formattedDate} @ ${formattedTime}`,
+		    type: sessionType
+		  };
+		}
+    
+    
 
     const TRACK_NAMES = {
       'barcelona': 'Barcelona', 'brands_hatch': 'Brands Hatch', 'circuit_of_the_americas': 'COTA',
@@ -200,6 +237,7 @@
       const totalPages = Math.ceil(finalFilteredLaps.length / ITEMS_PER_PAGE);
       const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
       const paginatedLaps = finalFilteredLaps.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+     
 
       const getDriverStats = (driverName) => {
         if (!driverName) return null;
@@ -518,6 +556,7 @@
                       {paginatedLaps.map((lap, index) => {
                         const absoluteIndex = startIndex + index;
                         const isActualFirst = lap.displayPosition === 1;
+                       const {infoStr} = parseSessionId(lap.session_id);
                         return (
                           <tr key={lap.id} style={{ borderBottom: '1px solid #1a1233', backgroundColor: isActualFirst ? 'rgba(49, 199, 205, 0.05)' : (absoluteIndex % 2 === 0 ? '#100a20' : '#120d24') }}>
                             <td style={{ padding: '16px 20px', color: isActualFirst ? '#06f5ff' : '#914cf2', fontSize: '16px', fontStyle: 'italic', backgroundColor: isActualFirst ? 'rgba(49, 199, 205, 0.08)' : 'transparent', borderRight: isActualFirst ? '1px solid #06f5ff' : 'none', verticalAlign: 'top' }}>
@@ -530,6 +569,16 @@
                               >
                                 {lap.driver_name}
                               </span>
+                              <div style={{ 
+                                  fontSize: '11px', 
+                                  color: '#a0a0c0', 
+                                  fontFamily: 'monospace', 
+                                  marginTop: '2px',
+                                  letterSpacing: '0.05em',
+                                  fontStyle: 'normal'
+                                }}>
+                                  {infoStr}
+                                </div>
                             </td>
                             <td style={{ padding: '16px 20px', color: '#b0b0d0', fontSize: '13px', verticalAlign: 'top' }}>
                               <ClassBadge carModel={lap.car_model} />{CAR_MODELS[lap.car_model] || `Car ID: ${lap.car_model}`}
