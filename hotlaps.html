@@ -19,7 +19,6 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    // Secured via Vercel Build script substitution
     const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
     const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY_PLACEHOLDER__';
 
@@ -217,25 +216,207 @@
       const driverStats = activeDriverModal ? getDriverStats(activeDriverModal) : null;
 
       return (
-        <div style={{ minHeight: '100vh', backgroundColor: '#0a0812', color: '#d4d4d4', fontFamily: '"Arial Narrow", system-ui, sans-serif', padding: '40px 20px', letterSpacing: '0.05em' }}>
-          <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#120d24', borderLeft: '4px solid #ea06ed', borderRight: '1px solid #914cf2', borderTop: '1px solid #914cf2', borderBottom: '1px solid #914cf2', padding: '22px 28px', marginBottom: '30px', boxShadow: '0 0 25px rgba(234, 6, 237, 0.25)', gap: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+        <div style={{ minHeight: '100vh', backgroundColor: '#0a0812', color: '#d4d4d4', fontFamily: '"Arial Narrow", system-ui, sans-serif', padding: '10px 0px 0px 0px', letterSpacing: '0.05em' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          
+          <a href="./">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 150" width="100%" height="auto" preserveAspectRatio="xMidYMid meet">
+  <defs>
+
+    <linearGradient id="cyber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00c5cc"/>
+      <stop offset="32%" stop-color="#00b8ff"/>
+      <stop offset="65%" stop-color="#8b5cff"/>
+      <stop offset="100%" stop-color="#ff27d9"/>
+    </linearGradient>
+
+    <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="45%" stop-color="#c8ced8"/>
+      <stop offset="70%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#8d96a4"/>
+    </linearGradient>
+
+    <radialGradient id="background" cx="48%" cy="48%" r="75%">
+      <stop offset="0%" stop-color="#08070f"/>
+      <stop offset="55%" stop-color="#08070f"/>
+      <stop offset="100%" stop-color="#08070f"/>
+    </radialGradient>
+
+    <filter id="glow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <filter id="smallGlow" x="-100%" y="-100%" width="300%" height="300%">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <clipPath id="roundedClip">
+      <rect x="0" y="0" width="600" height="150" rx="12" ry="12"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#roundedClip)">
+
+    <rect x="0" y="0" width="600" height="150" fill="url(#background)"/>
+
+    <path d="M0 117.5 L205 0 L360 0 L127.5 150 L0 150 Z" fill="#0f131b"/>
+
+    <path d="M350 150 L590 17.5 L600 17.5 L600 85 L482.5 150 Z" fill="#10141d"/>
+
+    <g opacity="0.12">
+      <path d="M0 130 L225 0" stroke="#ffffff" stroke-width="0.5"/>
+      <path d="M30 150 L260 17.5" stroke="#ffffff" stroke-width="0.5"/>
+      <path d="M380 150 L600 25" stroke="#ffffff" stroke-width="0.5"/>
+      <path d="M410 150 L600 40" stroke="#ffffff" stroke-width="0.5"/>
+    </g>
+
+    <g transform="translate(24 21.5) scale(0.5)">
+
+      <path d="
+          M104 0
+          L200 55
+          L200 157
+          L104 214
+          L8 157
+          L8 55
+          Z" fill="#090b10" stroke="#252d39" stroke-width="5"/>
+
+      <path d="
+          M104 7
+          L193 58
+          L193 104" fill="none" stroke="#00c5cc" stroke-width="6" stroke-linecap="round" filter="url(#glow)"/>
+      <path d="
+          M193 125
+          L193 153
+          L104 207" fill="none" stroke="#ff27d9" stroke-width="5" stroke-linecap="round" filter="url(#glow)"/>
+      <path d="
+          M15 153
+          L15 58
+          L67 28" fill="none" stroke="#7b5cff" stroke-width="5" stroke-linecap="round"/>
+
+      <path d="
+          M42 164
+          L88 47
+          L120 47
+          L168 164
+          L136 164
+          L126 133
+          L81 133
+          L71 164
+          Z" fill="url(#metal)"/>
+
+      <path d="
+          M90 108
+          L116 108
+          L103 73
+          Z" fill="#090b10"/>
+
+      <path d="
+          M126 47
+          L160 47
+          L128 164
+          L95 164
+          Z" fill="url(#cyber)" filter="url(#smallGlow)"/>
+
+      <path d="M35 181 L76 161" stroke="#00c5cc" stroke-width="4" stroke-linecap="round"/>
+      <path d="M29 194 L64 177" stroke="#ff27d9" stroke-width="3" stroke-linecap="round"/>
+    </g>
+
+    <g transform="translate(142.5 21.5) scale(0.5)">
+
+      <text x="0" y="76" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="78" font-weight="900" letter-spacing="5" fill="url(#metal)">
+        ACC
+      </text>
+
+      <text x="198" y="76" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="78" font-weight="900" letter-spacing="3" fill="url(#cyber)" filter="url(#smallGlow)">
+        RACE
+      </text>
+
+      <text x="3" y="151" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="72" font-weight="900" letter-spacing="11" fill="#ffffff">
+        HOST
+      </text>
+
+      <path d="M5 169 L580 169" stroke="#242b35" stroke-width="8"/>
+      <path d="M5 169 L365 169" stroke="url(#cyber)" stroke-width="5" stroke-linecap="round" filter="url(#smallGlow)"/>
+      <text x="7" y="205" font-family="Arial, Helvetica, sans-serif" font-size="21" font-weight="700" letter-spacing="8" fill="#8e97a5">
+        HOST ➜ RACE ➜ REPEAT
+      </text>
+    </g>
+
+    <g transform="translate(485 83) scale(0.5)">
+
+      <path d="
+          M0 0
+          L215 0
+          L198 59
+          L0 59
+          Z" fill="#0b0e14" stroke="#303846" stroke-width="2"/>
+
+      <path d="M0 0 L215 0" stroke="url(#cyber)" stroke-width="4" filter="url(#smallGlow)"/>
+
+      <text x="46" y="39" font-family="Arial Black, Arial, Helvetica, sans-serif" font-size="25" font-weight="900" letter-spacing="3" fill="#ffffff">
+        v1.03
+      </text>
+
+      <circle cx="180" cy="30" r="5" fill="#00c5cc" filter="url(#glow)"/>
+    </g>
+
+    <g font-family="Arial, Helvetica, sans-serif" font-size="5.7" font-weight="800" letter-spacing="1.5" fill="#505866">
+      <text x="485" y="135">
+        RACE CONTROL SYSTEM
+      </text>
+      <text x="485" y="142">
+        SESSION MANAGEMENT
+      </text>
+    </g>
+    <g opacity="0.85">
+      <path d="M410 29 L465 6" stroke="#00c5cc" stroke-width="2" stroke-linecap="round"/>
+      <path d="M425 36.5 L480 13.5" stroke="#7b5cff" stroke-width="1.5" stroke-linecap="round"/>
+      <path d="M440 44 L495 21" stroke="#ff27d9" stroke-width="1" stroke-linecap="round"/>
+    </g>
+    <circle cx="562.5" cy="122.5" r="1.5" fill="#00c5cc" filter="url(#smallGlow)"/>
+    <circle cx="570" cy="122.5" r="1.5" fill="#7b5cff" filter="url(#smallGlow)"/>
+    <circle cx="577.5" cy="122.5" r="1.5" fill="#ff27d9" filter="url(#smallGlow)"/>
+  </g>
+  <rect x="1" y="1" width="598" height="148" rx="11" ry="11" fill="none" stroke="#ea06ed" stroke-width="0.8"/>
+</svg></a>
+        &nbsp;
+          
+            <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#120d24', borderLeft: '1px solid #914cf2', borderRight: '1px solid #914cf2', borderTop: '1px solid #914cf2', borderBottom: '1px solid #914cf2', padding: '22px 28px', marginBottom: '30px', boxShadow: '0 0 25px rgba(234, 6, 237, 0.25)', gap: '20px' }}>
+            
+            
+            
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%'}}>
                 <div>
-                  <h1 style={{ margin: 0, fontFamily: '"Teko", sans-serif', fontSize: '52px', fontWeight: 'bold', color: '#ffffff', textTransform: 'uppercase', fontStyle: 'italic', lineHeight: '1' }}>
-                    ACC <span style={{ color: '#06f5ff' }}>RACE HOST</span>
-                  </h1>
+                
+                	
+                  
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
                     <span style={{ height: '7px', width: '7px', backgroundColor: '#06f5ff', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 8px #06f5ff' }}></span>
-                    <span style={{ fontSize: '14px', fontWeight: 'bold', fontFamily: 'monospace', color: '#ea06ed', letterSpacing: '0.22em' }}>HOTLAP LIVE LEADERBOARD</span>
+                    <span style={{ fontSize: '14px', fontWeight: 'bold',color: '#ea06ed', letterSpacing: '0.22em' }}>Live ACC Race Host - <span style={{color: '#07f4ff'}}>HOTLAP LEADERBOARD</span></span>
                   </div>
+                  
+                  <div style={{width: '100%', display:'block', marginTop: '15px'}}>
+                  <span style={{fontSize: '12px', color: '#07f4ff'}}>Server name: </span><span style={{fontSize: '11px', color: '#ffffff'}}>ACC Race Host | Live Hotlap leaderboard | www.accracehost.com | Track Rotation | BOP | Banlist</span>
+      						</div>
+      						
+      					
+                  
                 </div>
               </div>
               
               {selectedTrack !== '' && (
                 <div style={{ display: 'flex', alignItems: 'flex-end', width: '100%', flexWrap: 'wrap', gap: '15px' }}>
                   <button onClick={() => setSelectedTrack('')} style={{ marginRight: 'auto', backgroundColor: '#191133', color: '#06f5ff', border: '1px solid #06f5ff', padding: '7px 14px', fontFamily: 'monospace', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
-                    ← CHANGE TRACK
+                    CHANGE TRACK
                   </button>
                   <div>
                     <label style={{ fontSize: '11px', color: '#914cf2', display: 'block', fontFamily: 'monospace', marginBottom: '4px' }}>SEARCH DRIVER</label>
@@ -394,36 +575,121 @@
             )}
           </div>
 
-          {/* DRIVER PROFILE MODAL */}
-          {driverStats && (
-            <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(10, 8, 18, 0.85)', backdropFilter: 'blur(4px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1000, padding: '20px' }} onClick={() => setActiveDriverModal(null)}>
-              <div style={{ backgroundColor: '#120d24', border: '1px solid #ea06ed', borderTop: '4px solid #06f5ff', padding: '28px', maxWidth: '480px', width: '100%', boxShadow: '0 0 35px rgba(234, 6, 237, 0.3)' }} onClick={(e) => e.stopPropagation()}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
-                  <div>
-                    <div style={{ fontSize: '11px', color: '#06f5ff', fontFamily: 'monospace', letterSpacing: '0.15em' }}>DRIVER TELEMETRY PROFILE</div>
-                    <h2 style={{ margin: '4px 0 0 0', fontSize: '26px', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase' }}>{driverStats.name}</h2>
-                  </div>
-                  <button onClick={() => setActiveDriverModal(null)} style={{ background: 'transparent', color: '#ea06ed', border: 'none', fontSize: '20px', cursor: 'pointer' }}>✕</button>
+       {/* DRIVER PROFILE MODAL POPUP */}
+      {driverStats && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(10, 8, 18, 0.85)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}
+        onClick={() => setActiveDriverModal(null)}
+        >
+          <div style={{
+            backgroundColor: '#120d24',
+            border: '1px solid #ea06ed',
+            borderTop: '4px solid #06f5ff',
+            padding: '28px',
+            maxWidth: '480px',
+            width: '100%',
+            boxShadow: '0 0 35px rgba(234, 6, 237, 0.3)',
+            position: 'relative'
+          }}
+          onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+              <div>
+                <div style={{ fontSize: '11px', color: '#06f5ff', fontFamily: 'monospace', letterSpacing: '0.15em' }}>
+                  DRIVER TELEMETRY PROFILE
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
-                  <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
-                    <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>POSITION</div>
-                    <div style={{ fontSize: '20px', color: '#06f5ff', fontFamily: 'monospace', fontWeight: 'bold' }}>P{driverStats.position}</div>
-                  </div>
-                  <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
-                    <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>BEST LAP</div>
-                    <div style={{ fontSize: '20px', color: '#ffffff', fontFamily: 'monospace', display: 'flex', alignItems: 'center' }}>
-                      <WeatherBadge wetlap={driverStats.wetlap} />{formatLapTime(driverStats.bestLapMs)}
-                    </div>
-                  </div>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: '26px', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase' }}>
+                  {driverStats.name}
+                </h2>
+              </div>
+              <button
+                onClick={() => setActiveDriverModal(null)}
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#ea06ed',
+                  border: 'none',
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontFamily: 'monospace',
+                  lineHeight: '1'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>POSITION</div>
+                <div style={{ fontSize: '20px', color: '#06f5ff', fontFamily: 'monospace', fontWeight: 'bold' }}>P{driverStats.position}</div>
+              </div>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>BEST LAP</div>
+                <div style={{ fontSize: '20px', color: '#ffffff', fontFamily: 'monospace', display: 'flex', alignItems: 'center' }}>
+                  <WeatherBadge wetlap={driverStats.wetlap} />
+                  {formatLapTime(driverStats.bestLapMs)}
                 </div>
-                <button onClick={() => setActiveDriverModal(null)} style={{ width: '100%', backgroundColor: '#191133', color: '#06f5ff', border: '1px solid #06f5ff', padding: '10px', fontFamily: 'monospace', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>CLOSE PROFILE</button>
+              </div>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>DELTA TO P1</div>
+                <div style={{ fontSize: '20px', color: '#ea06ed', fontFamily: 'monospace' }}>{driverStats.delta}</div>
+              </div>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>SESSIONS RECORDED</div>
+                <div style={{ fontSize: '20px', color: '#ffffff', fontFamily: 'monospace' }}>{driverStats.totalSessions}</div>
               </div>
             </div>
-          )}
+
+            {/* Modal Best Sector Splits */}
+            <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2', marginBottom: '12px' }}>
+              <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace', marginBottom: '6px' }}>BEST SECTOR SPLITS</div>
+              <SectorSplitsDisplay splits={driverStats.bestSplits} align="left" />
+            </div>
+
+            <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2', marginBottom: '20px' }}>
+              <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace', marginBottom: '6px' }}>CARS DRIVEN</div>
+              <div style={{ fontSize: '13px', color: '#d4d4d4', fontFamily: 'sans-serif' }}>
+                {driverStats.carsDriven.join(', ')}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setActiveDriverModal(null)}
+              style={{
+                width: '100%',
+                backgroundColor: '#191133',
+                color: '#06f5ff',
+                border: '1px solid #06f5ff',
+                padding: '10px',
+                fontFamily: 'monospace',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase'
+              }}
+            >
+              CLOSE PROFILE
+            </button>
+          </div>
         </div>
-      );
-    }
+      )}
+    </div>
+  );
+}
 
     ReactDOM.render(<App />, document.getElementById('root'));
   </script>
