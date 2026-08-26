@@ -542,7 +542,6 @@ body {
   <div id="root"></div>
 
   <script type="text/babel" data-type="module">
-  	const response = await fetch('config.json');
     const { useState, useEffect } = React;
 
     const SUPABASE_URL = 'https://klduwrrqoyuyridfiutd.supabase.co';
@@ -556,24 +555,6 @@ body {
       const seconds = Math.floor((ms % 60000) / 1000);
       const milliseconds = ms % 1000;
       return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
-    }
-    
-        async function loadConfig() {
-    try {
-        const response = await fetch('config.json');
-
-        if (!response.ok) {
-            throw new Error('Could not load config.json');
-        }
-
-        const config = await response.json();
-
-        document.querySelector('.server-text').textContent =
-            `${config.servername} ${config.logo}`;
-
-    } catch (error) {
-        console.error('Error loading config:', error);
-    }
     }
 
     function formatSectorTime(ms) {
@@ -711,12 +692,28 @@ body {
       const [error, setError] = useState(null);
       const [loading, setLoading] = useState(true);
       const [activeDriverModal, setActiveDriverModal] = useState(null);
+      
+      // State to hold configuration file values
+      const [serverConfig, setServerConfig] = useState({ servername: 'LOADING...', logo: '' });
 
       const ITEMS_PER_PAGE = 25;
 
-      useEffect(() => { setCurrentPage(1); }, [selectedTrack, selectedClass, selectedWeather, searchQuery]);
+      // Fetch configuration data on mount
+      useEffect(() => {
+        async function loadConfig() {
+          try {
+            const response = await fetch('config.json');
+            if (!response.ok) throw new Error('Could not load config.json');
+            const config = await response.json();
+            setServerConfig(config);
+          } catch (err) {
+            console.error('Error loading config:', err);
+          }
+        }
+        loadConfig();
+      }, []);
 
-      
+      useEffect(() => { setCurrentPage(1); }, [selectedTrack, selectedClass, selectedWeather, searchQuery]);
 
       useEffect(() => {
         async function fetchTracksList() {
@@ -1025,7 +1022,7 @@ body {
                 
                 <div className="server-info-box">
                   <span className="server-label">Server name: </span>
-                  <span className="server-text"></span>
+                  <span className="server-text">{serverConfig.servername} {serverConfig.logo}</span>
                 </div>
               </div>
 
@@ -1248,12 +1245,6 @@ body {
         </div>
       );
     }
-    
-
-   
-
-
-document.addEventListener('DOMContentLoaded', loadConfig);
 
     const container = document.getElementById('root');
     const root = ReactDOM.createRoot(container);
