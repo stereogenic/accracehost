@@ -1,4 +1,217 @@
 {
   "servername": "ACC Race Host | Live Hotlap leaderboard | mywebsite.vercel.app | Track Rotation | BOP | Banlist | Host. Race. Repeat.",
-  "sitelogo":"duck.png"
+  "sitelogo":"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 150" width="100%" height="100%">
+  <defs>
+    <linearGradient id="cyber" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff3030"/>
+      <stop offset="35%" stop-color="#d90000"/>
+      <stop offset="70%" stop-color="#ff4444"/>
+      <stop offset="100%" stop-color="#8f0000"/>
+    </linearGradient>
+
+    <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="35%" stop-color="#b8b8b8"/>
+      <stop offset="60%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#666666"/>
+    </linearGradient>
+
+    <radialGradient id="background" cx="48%" cy="48%" r="75%">
+      <stop offset="0%" stop-color="#101010"/>
+      <stop offset="55%" stop-color="#090909"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <filter id="smallGlow">
+      <feGaussianBlur stdDeviation="1" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <clipPath id="roundedClip">
+      <rect x="0" y="0" width="600" height="150" rx="12" ry="12"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#roundedClip)">
+    <rect x="0" y="0" width="600" height="150" fill="url(#background)"/>
+
+    <path d="M0 117.5 L205 0 L360 0 L127.5 150 L0 150 Z"
+          fill="#151515"/>
+
+    <path d="M350 150 L590 17.5 L600 17.5 L600 85 L482.5 150 Z"
+          fill="#121212"/>
+
+    <g opacity="0.12">
+      <path d="M0 130 L225 0"
+            stroke="#ffffff"
+            stroke-width="0.5"/>
+      <path d="M30 150 L260 17.5"
+            stroke="#ffffff"
+            stroke-width="0.5"/>
+      <path d="M380 150 L600 25"
+            stroke="#ffffff"
+            stroke-width="0.5"/>
+      <path d="M410 150 L600 40"
+            stroke="#ffffff"
+            stroke-width="0.5"/>
+    </g>
+
+    <g transform="translate(24 21.5) scale(0.5)">
+      <path d="M104 0 L200 55 L200 157 L104 214 L8 157 L8 55 Z"
+            fill="#080808"
+            stroke="#444444"
+            stroke-width="5"/>
+
+      <path d="M104 7 L193 58 L193 104"
+            fill="none"
+            stroke="#ff2020"
+            stroke-width="6"
+            stroke-linecap="round"
+            filter="url(#glow)"/>
+
+      <path d="M193 125 L193 153 L104 207"
+            fill="none"
+            stroke="#b00000"
+            stroke-width="5"
+            stroke-linecap="round"
+            filter="url(#glow)"/>
+
+      <path d="M15 153 L15 58 L67 28"
+            fill="none"
+            stroke="#888888"
+            stroke-width="5"
+            stroke-linecap="round"/>
+
+      <circle cx="104" cy="107" r="32" fill="url(#metal)"/>
+      <circle cx="104" cy="107" r="14" fill="#090909"/>
+    </g>
+
+    <g transform="translate(142.5 21.5) scale(0.5)">
+      <text x="0" y="76"
+            font-family="Arial Black, sans-serif"
+            font-size="78"
+            font-weight="900"
+            letter-spacing="5"
+            fill="url(#metal)">Your</text>
+
+      <text x="325" y="76"
+            font-family="Arial Black, sans-serif"
+            font-size="78"
+            font-weight="900"
+            letter-spacing="3"
+            fill="url(#cyber)"
+            filter="url(#smallGlow)">LOGO</text>
+
+      <text x="3" y="151"
+            font-family="Arial Black, sans-serif"
+            font-size="72"
+            font-weight="900"
+            letter-spacing="11"
+            fill="#ffffff">HERE!</text>
+
+      <path d="M5 169 L580 169"
+            stroke="#3a3a3a"
+            stroke-width="8"/>
+
+      <path d="M5 169 L365 169"
+            stroke="url(#cyber)"
+            stroke-width="5"
+            stroke-linecap="round"
+            filter="url(#smallGlow)"/>
+
+      <text x="7" y="205"
+            font-family="Arial, sans-serif"
+            font-size="21"
+            font-weight="700"
+            letter-spacing="8"
+            fill="#888888">YOUR ➜ SLOGAN ➜ HERE</text>
+    </g>
+
+    <g transform="translate(485 83) scale(0.5)">
+      <path d="M0 0 L215 0 L198 59 L0 59 Z"
+            fill="#090909"
+            stroke="#444444"
+            stroke-width="2"/>
+
+      <path d="M0 0 L215 0"
+            stroke="url(#cyber)"
+            stroke-width="4"
+            filter="url(#smallGlow)"/>
+
+      <text x="26" y="39"
+            font-family="Arial Black, sans-serif"
+            font-size="22"
+            font-weight="900"
+            letter-spacing="3"
+            fill="#ffffff">HOTLAPS</text>
+
+      <circle cx="180" cy="30"
+              r="5"
+              fill="#ff2020"
+              filter="url(#glow)"/>
+    </g>
+
+    <g font-family="Arial, sans-serif"
+       font-size="5.7"
+       font-weight="800"
+       letter-spacing="1.5"
+       fill="#666666">
+
+      <text x="485" y="135">PLACEHOLDER SYSTEM</text>
+      <text x="485" y="142">CUSTOMIZABLE AREA</text>
+    </g>
+
+    <g opacity="0.85">
+      <path d="M410 29 L465 6"
+            stroke="#ff2020"
+            stroke-width="2"
+            stroke-linecap="round"/>
+
+      <path d="M425 36.5 L480 13.5"
+            stroke="#888888"
+            stroke-width="1.5"
+            stroke-linecap="round"/>
+
+      <path d="M440 44 L495 21"
+            stroke="#666666"
+            stroke-width="1"
+            stroke-linecap="round"/>
+    </g>
+
+    <circle cx="562.5" cy="122.5"
+            r="1.5"
+            fill="#ff2020"
+            filter="url(#smallGlow)"/>
+
+    <circle cx="570" cy="122.5"
+            r="1.5"
+            fill="#888888"
+            filter="url(#smallGlow)"/>
+
+    <circle cx="577.5" cy="122.5"
+            r="1.5"
+            fill="#ffffff"
+            filter="url(#smallGlow)"/>
+  </g>
+
+  <rect x="1" y="1"
+        width="598"
+        height="148"
+        rx="11"
+        ry="11"
+        fill="none"
+        stroke="#303030"
+        stroke-width="2"/>
+</svg>"
 }
