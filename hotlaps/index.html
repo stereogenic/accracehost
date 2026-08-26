@@ -375,9 +375,9 @@
                     onChange={(e) => setCurrentTheme(e.target.value)} 
                     style={{ backgroundColor: '#0a0812', color: '#fff', border: '1px solid #914cf2', padding: '6px 12px', fontFamily: 'monospace', fontSize: '14px', cursor: 'pointer' }}
                   >
-                    <option value="theme1.css">Theme 1</option>acc race host
-                    <option value="theme2.css">Theme 2</option>acc race host
-                    <option value="theme3.css">Theme 3</option>acc race host
+                    <option value="theme1.css">Theme 1</option>
+                    <option value="theme2.css">Theme 2</option>
+                    <option value="theme3.css">Theme 3</option>
                   </select>
                 </div>
               </div>
@@ -671,7 +671,9 @@
   );
 }
 
-    ReactDOM.render(<App />, document.getElementById('root'));
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
   </script>
 </body>
 </html>
