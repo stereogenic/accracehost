@@ -1,0 +1,33 @@
+:root {
+  --bg-main: #0a0505;
+  --bg-card: #140a0a;
+  --bg-button: #240f0f;
+  --text-main: #ececec;
+  --text-muted: #a08080;
+  --accent-cyan: #ff2a2a;
+  --accent-magenta: #b30000;
+  --border-color: #592626;
+  --table-border: #261313;
+  --row-alt-bg: #100707;
+  --row-first-bg: rgba(255, 42, 42, 0.08);
+  --glow-card: rgba(255, 42, 42, 0.2);
+  --podium-glow-1: rgba(255, 42, 42, 0.35);
+  --podium-glow-2: rgba(179, 0, 0, 0.25);
+  --podium-glow-3: rgba(89, 38, 38, 0.2);
+
+  /* SVG Theme Variables */
+  --svg-bg-0: #080303;
+  --svg-panel-1: #120707;
+  --svg-panel-2: #1a0a0a;
+  --svg-hex-bg: #0d0404;
+  --svg-hex-stroke: #3d1a1a;
+  --svg-grad-1: #ff2a2a;
+  --svg-grad-2: #e60000;
+  --svg-grad-3: #990000;
+  --svg-grad-4: #4d0000;
+  --svg-mod-bg: #140808;
+  --svg-mod-stroke: #4d1a1a;
+  --svg-divider: #2e1111;
+  --svg-tagline: #a08080;
+  --svg-tech-text: #663333;
+}
