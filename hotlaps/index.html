@@ -558,7 +558,23 @@ body {
       return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
     }
     
-    
+        async function loadConfig() {
+    try {
+        const response = await fetch('config.json');
+
+        if (!response.ok) {
+            throw new Error('Could not load config.json');
+        }
+
+        const config = await response.json();
+
+        document.querySelector('.server-text').textContent =
+            `${config.servername} ${config.logo}`;
+
+    } catch (error) {
+        console.error('Error loading config:', error);
+    }
+    }
 
     function formatSectorTime(ms) {
       if (!ms || ms === 2147483647) return '——';
@@ -1233,23 +1249,7 @@ body {
       );
     }
     
-    async function loadConfig() {
-    try {
-        const response = await fetch('config.json');
 
-        if (!response.ok) {
-            throw new Error('Could not load config.json');
-        }
-
-        const config = await response.json();
-
-        document.querySelector('.server-text').textContent =
-            `${config.servername} ${config.logo}`;
-
-    } catch (error) {
-        console.error('Error loading config:', error);
-    }
-}
    
 
 
