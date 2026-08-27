@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ACC Race Host - Hotlap Leaderboard</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Supabase JS Client CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body style="margin: 0; background-color: #0a0812;">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    //const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
+    //const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY_PLACEHOLDER__';
+
+    const SUPABASE_URL = 'https://klduwrrqoyuyridfiutd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZHV3cnJxb3l1eXJpZGZpdXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM1MTYsImV4cCI6MjEwMzE3OTUxNn0.Sj1MLZ0qoDhzv7boiqTabIE6N1oesleF1Dr3g-XT1K8';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    function formatLapTime(ms) {
+      if (!ms || ms === 2147483647) return '——';
+      const minutes = Math.floor(ms / 60000);
+      const seconds = Math.floor((ms % 60000) / 1000);
+      const milliseconds = ms % 1000;
+      return `${minutes}:${seconds.toString().padStart(2, '0')}.${milliseconds.toString().padStart(3, '0')}`;
+    }
+
+    function formatSectorTime(ms) {
+      if (!ms || ms === 2147483647) return '——';
+      const seconds = Math.floor(ms / 1000);
+      const millis = ms % 1000;
+      return `${seconds}.${millis.toString().padStart(3, '0')}`;
+    }
+
+    function formatDelta(currentMs, p1Ms) {
+      if (!currentMs || !p1Ms || currentMs === p1Ms) return '——';
+      const diff = currentMs - p1Ms;
+      const seconds = (diff / 1000).toFixed(3);
+      return `+${seconds}s`;
+    }
+
+    function WeatherBadge({ wetlap }) {
+      const isWet = String(wetlap).toLowerCase() === 'wet' || wetlap === true;
+      return (
+        <span title={isWet ? 'Wet Session' : 'Dry Session'} style={{ marginRight: '6px', fontSize: '15px', verticalAlign: 'middle' }}>
+          {isWet ? '🌧️' : '☀️'}
+        </span>
+      );
+    }
+
+    function SectorSplitsDisplay({ splits, align = 'left' }) {
+      if (!splits || !Array.isArray(splits) || splits.length === 0) return null;
+      return (
+        <div style={{ display: 'flex', justifyContent: align === 'right' ? 'flex-end' : 'flex-start', gap: '5px', flexWrap: 'wrap', marginTop: '4px' }}>
+          {splits.map((splitMs, idx) => (
+            <span key={idx} style={{ backgroundColor: '#0a0812', border: '1px solid #914cf2', color: '#06f5ff', fontSize: '10px', fontFamily: 'monospace', padding: '1px 5px', borderRadius: '2px' }}>
+              <span style={{ color: '#a0a0c0', fontSize: '9px', marginRight: '3px' }}>S{idx + 1}</span>
+              {formatSectorTime(splitMs)}
+            </span>
+          ))}
+        </div>
+      );
+    }
+    
+    // Parses session_id into date, time, and type
+		function parseSessionId(sessionId) {
+		  if (!sessionId) return { infoStr: '', type: '' };
+		  
+		  const parts = sessionId.split('_');
+		  if (parts.length < 3) return { infoStr: '', type: '' };
+
+		  const [datePart, timePart, remaining] = parts;
+		  
+		  const day = datePart.substring(4, 6);
+		  const month = datePart.substring(2, 4);
+		  const year = `20${datePart.substring(0, 2)}`;
+		  const formattedDate = `${day}/${month}/${year}`;
+
+		  const hours = timePart.substring(0, 2);
+		  const minutes = timePart.substring(2, 4);
+		  const formattedTime = `${hours}:${minutes}`;
+
+		  const typeLetter = remaining.split('-')[0];
+		  let sessionType = typeLetter;
+
+		  if (/^Q\d*$/.test(typeLetter)) {
+		    sessionType = 'Q';
+		  } else if (/^R\d*$/.test(typeLetter)) {
+		    sessionType = 'R';
+		  } else if (/^FP\d*$/.test(typeLetter)) {
+		    sessionType = 'Q';
+		  }
+
+		  return {
+		    infoStr: `${formattedDate} @ ${formattedTime}`,
+		    type: sessionType
+		  };
+		}
+    
+    
+
+    const TRACK_NAMES = {
+      'barcelona': 'Barcelona', 'brands_hatch': 'Brands Hatch', 'circuit_of_the_americas': 'COTA',
+      'donington': 'Donington Park', 'hungaroring': 'Hungaroring', 'indianapolis': 'Indianapolis',
+      'kyalami': 'Kyalami', 'laguna_seca': 'Laguna Seca', 'misano': 'Misano', 'monza': 'Monza Circuit',
+      'mount_panorama': 'Bathurst', 'nurburgring': 'Nürburgring', 'nurburgring_24h': 'Nordschleife',
+      'oulton_park': 'Oulton Park', 'paul_ricard': 'Paul Ricard', 'red_bull_ring': 'Red Bull Ring',
+      'silverstone': 'Silverstone', 'snetterton': 'Snetterton', 'spa': 'Spa-Francorchamps',
+      'suzuka': 'Suzuka', 'valencia': 'Valencia', 'watkins_glen': 'Watkins Glen', 'zandvoort': 'Zandvoort', 'zolder': 'Zolder'
+    };
+
+    const CAR_CLASSES = {
+      '0': 'GT3', '1': 'GT3', '2': 'GT3', '3': 'GT3', '4': 'GT3', '5': 'GT3', '6': 'GT3', '7': 'GT3', '8': 'GT3', '9': 'CUP',
+      '10': 'GT3', '11': 'GT3', '12': 'GT3', '13': 'GT3', '14': 'GT3', '15': 'GT3', '16': 'GT3', '17': 'GT3', '18': 'ST',
+      '19': 'GT3', '20': 'GT3', '21': 'GT3', '22': 'GT3', '23': 'GT3', '24': 'GT3', '25': 'GT3', '26': 'CH', '27': 'TC', '28': 'CUP', '29': 'ST',
+      '30': 'GT3', '31': 'TC', '32': 'GT3', '33': 'GT3', '34': 'GT3', '35': 'GT3', '36': 'GT3', 
+      '50': 'GT4', '51': 'GT4', '52': 'GT4', '53': 'GT4', '55': 'GT4', '56': 'GT4', '57': 'GT4', '58': 'GT4', '59': 'GT4', '60': 'GT4', '61': 'GT4', 
+      '80': 'GT2', '82': 'GT2', '83': 'GT2', '84': 'GT2', '85': 'GT2', '86': 'GT2'
+    };
+
+    const CLASS_COLORS = {
+      'GT3': { bg: 'rgba(239, 68, 68, 0.1)', border: '#ef4444', text: '#fca5a5' },
+      'GT4': { bg: 'rgba(59, 130, 246, 0.1)', border: '#3b82f6', text: '#93c5fd' },
+      'GT2': { bg: 'rgba(16, 185, 129, 0.1)', border: '#10b981', text: '#6ee7b7' },
+      'CUP': { bg: 'rgba(245, 158, 11, 0.1)', border: '#f59e0b', text: '#fde047' },
+      'ST': { bg: 'rgba(139, 92, 246, 0.1)', border: '#8b5cf6', text: '#c4b5fd' },
+      'CH': { bg: 'rgba(236, 72, 153, 0.1)', border: '#ec4899', text: '#fbcfe8' },
+      'TC': { bg: 'rgba(107, 114, 128, 0.1)', border: '#6b7280', text: '#d1d5db' }
+    };
+
+    function ClassBadge({ carModel }) {
+      const cls = CAR_CLASSES[String(carModel)] || 'OTHERS'; 
+      const colors = CLASS_COLORS[cls] || { bg: 'rgba(17, 24, 39, 0.5)', border: '#374151', text: '#9ca3af' };
+      return (
+        <span style={{ display: 'inline-block', padding: '2px 6px', fontSize: '10px', fontWeight: 'bold', fontFamily: 'monospace', backgroundColor: colors.bg, border: `1px solid ${colors.border}`, color: colors.text, borderRadius: '3px', marginRight: '8px', textTransform: 'uppercase', verticalAlign: 'middle' }}>
+          {cls}
+        </span>
+      );
+    }
+
+    const CAR_MODELS = {
+      '0': 'Porsche 991 GT3 R', '1': 'Mercedes-AMG GT3 (2015)', '2': 'Ferrari 488 GT3', '3': 'Audi R8 LMS', '4': 'Lamborghini Huracán GT3',
+      '5': 'McLaren 650S GT3', '6': 'Nissan GT-R NISMO GT3 (2018)', '7': 'BMW M6 GT3', '8': 'Bentley Continental GT3 (2018)', '9': 'Porsche 991 II GT3 Cup',
+      '10': 'Nissan GT-R NISMO GT3 (2017)', '11': 'Bentley Continental GT3 (2016)', '12': 'Aston Martin V12 Vantage GT3', '13': 'Lamborghini Gallardo R-EX',
+      '14': 'Jaguar G3', '15': 'Lexus RC F GT3', '16': 'Lamborghini Huracán GT3 Evo', '17': 'Honda NSX GT3', '18': 'Lamborghini Huracán Super Trofeo',
+      '19': 'Audi R8 LMS Evo', '20': 'Aston Martin V8 Vantage GT3', '21': 'Honda NSX GT3 Evo', '22': 'McLaren 720S GT3', '23': 'Porsche 991.2 GT3 R',
+      '24': 'Ferrari 488 GT3 Evo', '25': 'Mercedes-AMG GT3 Evo', '26': 'Ferrari 488 Challenge Evo', '27': 'BMW M2 CS Racing', '28': 'Porsche 992 GT3 Cup',
+      '29': 'Lamborghini Huracán Super Trofeo EVO2', '30': 'BMW M4 GT3', '31': 'Audi R8 LMS Evo II', '32': 'Ferrari 296 GT3', '33': 'Lamborghini Huracán GT3 EVO2',
+      '34': 'Porsche 992 GT3 R', '35': 'McLaren 720S GT3 Evo', '36': 'Ford Mustang GT3', '50': 'Alpine A110 GT4', '51': 'Aston Martin Vantage GT4',
+      '52': 'Audi R8 LMS GT4', '53': 'BMW M4 GT4', '55': 'Chevrolet Camaro GT4.R', '56': 'Ginetta G55 GT4', '57': 'KTM X-Bow GT4', '58': 'Maserati MC GT4',
+      '59': 'McLaren 570S GT4', '60': 'Mercedes-AMG GT4', '61': 'Porsche 718 Cayman GT4 Clubsport', '80': 'Audi R8 LMS GT2', '82': 'KTM X-Bow GT2',
+      '83': 'Maserati MC20 GT2', '84': 'Mercedes-AMG GT2', '85': 'Porsche 911 GT2 RS Clubsport Evo', '86': 'Porsche 935'
+    };
+
+    function App() {
+      const [uniqueTracks, setUniqueTracks] = useState([]);
+      const [queryData, setQueryData] = useState([]);
+      const [selectedTrack, setSelectedTrack] = useState(''); 
+      const [selectedClass, setSelectedClass] = useState('ALL'); 
+      const [selectedWeather, setSelectedWeather] = useState('DRY'); 
+      const [searchQuery, setSearchQuery] = useState(''); 
+      const [currentPage, setCurrentPage] = useState(1); 
+      const [error, setError] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [activeDriverModal, setActiveDriverModal] = useState(null);
+
+      const ITEMS_PER_PAGE = 25;
+      
+       // State to hold configuration file values
+      const [serverConfig, setServerConfig] = useState({ servername: 'LOADING...', sitelogo: '' });
+
+      
+
+      // Fetch configuration data on mount
+      useEffect(() => {
+        async function loadConfig() {
+          try {
+            const response = await fetch('config.json');
+            if (!response.ok) throw new Error('Could not load config.json');
+            const config = await response.json();
+            setServerConfig(config);
+          } catch (err) {
+            console.error('Error loading config:', err);
+          }
+        }
+        loadConfig();
+      }, []);
+
+      useEffect(() => { setCurrentPage(1); }, [selectedTrack, selectedClass, selectedWeather, searchQuery]);
+
+      useEffect(() => {
+        async function fetchTracksList() {
+          try {
+            const { data, error } = await supabase.rpc('get_unique_tracks');
+            if (error) throw error;
+            if (!data || data.length === 0) { setUniqueTracks([]); return; }
+            const tracks = data.map(item => item.track ? String(item.track).trim().toLowerCase() : null).filter(Boolean);
+            setUniqueTracks(tracks.sort());
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
+        }
+        fetchTracksList();
+      }, []);
+
+      useEffect(() => {
+        if (!selectedTrack) { setQueryData([]); return; }
+        async function fetchFilteredLaps() {
+          setLoading(true);
+          try {
+            let query = supabase.from('hotlaps').select('*').ilike('track', selectedTrack).order('best_lap_ms', { ascending: true }).range(0, 4999);
+            if (selectedClass !== 'ALL') {
+              const targetCarIds = Object.keys(CAR_CLASSES).filter(key => CAR_CLASSES[key] === selectedClass);
+              query = query.in('car_model', [...targetCarIds, ...targetCarIds.map(id => Number(id))]);
+            }
+            if (selectedWeather === 'DRY') query = query.or('wetlap.ilike.dry,wetlap.eq.false');
+            else if (selectedWeather === 'WET') query = query.or('wetlap.ilike.wet,wetlap.eq.true');
+
+            const { data, error } = await query;
+            if (error) throw error;
+            setQueryData(data || []);
+          } catch (err) {
+            setError(err.message);
+          } finally {
+            setLoading(false);
+          }
+        }
+        fetchFilteredLaps();
+      }, [selectedTrack, selectedClass, selectedWeather]);
+
+      if (loading && uniqueTracks.length === 0) {
+        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#0a0812', color: '#06f5ff' }}><code>🏁 LOADING TELEMETRY ENGINE...</code></div>;
+      }
+      if (error) {
+        return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#0a0812', color: '#ea06ed' }}><code>🏁 RACE CONTROL ERROR: {error}</code></div>;
+      }
+
+      const seenDrivers = new Set();
+      const baselineUniqueLaps = queryData.filter(lap => {
+        if (seenDrivers.has(lap.driver_name)) return false;
+        seenDrivers.add(lap.driver_name);
+        return true;
+      });
+
+      const lapsWithDisplayPosition = baselineUniqueLaps.map((lap, index) => ({ ...lap, displayPosition: index + 1 }));
+      const finalFilteredLaps = lapsWithDisplayPosition.filter(lap => lap.driver_name?.toLowerCase().includes(searchQuery.toLowerCase()));
+      const p1Time = baselineUniqueLaps[0]?.best_lap_ms;
+      const totalPages = Math.ceil(finalFilteredLaps.length / ITEMS_PER_PAGE);
+      const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+      const paginatedLaps = finalFilteredLaps.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+     
+
+      const getDriverStats = (driverName) => {
+        if (!driverName) return null;
+        const driverLaps = queryData.filter(l => l.driver_name === driverName);
+        const bestLap = driverLaps[0];
+        const carsDriven = Array.from(new Set(driverLaps.map(l => CAR_MODELS[l.car_model] || `Car ID: ${l.car_model}`)));
+        const position = baselineUniqueLaps.findIndex(l => l.driver_name === driverName) + 1;
+        return {
+          name: driverName, bestLapMs: bestLap?.best_lap_ms, bestSplits: bestLap?.best_splits,
+          totalSessions: driverLaps.length, carsDriven, position: position > 0 ? position : 'N/A',
+          delta: formatDelta(bestLap?.best_lap_ms, p1Time), wetlap: bestLap?.wetlap
+        };
+      };
+      const driverStats = activeDriverModal ? getDriverStats(activeDriverModal) : null;
+
+      return (
+        <div style={{ minHeight: '100vh', backgroundColor: '#0a0812', color: '#d4d4d4', fontFamily: '"Arial Narrow", system-ui, sans-serif', padding: '10px 0px 0px 0px', letterSpacing: '0.05em' }}>
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          
+         <a href="./"><img width="100%" src={serverConfig.sitelogo} alt="Server Logo" /></a>
+        &nbsp;
+          
+            <div style={{ display: 'flex', flexDirection: 'column', backgroundColor: '#120d24', borderLeft: '1px solid #914cf2', borderRight: '1px solid #914cf2', borderTop: '1px solid #914cf2', borderBottom: '1px solid #914cf2', padding: '22px 28px', marginBottom: '30px', boxShadow: '0 0 25px rgba(234, 6, 237, 0.25)', gap: '20px' }}>
+            
+            
+            
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%'}}>
+                <div>
+                
+                	
+                  
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+                    <span style={{ height: '7px', width: '7px', backgroundColor: '#06f5ff', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 8px #06f5ff' }}></span>
+                    <span style={{ fontSize: '14px', fontWeight: 'bold',color: '#ea06ed', letterSpacing: '0.22em' }}>Live ACC Race Host - <span style={{color: '#07f4ff'}}>HOTLAP LEADERBOARD</span></span>
+                  </div>
+                  
+                  <div style={{width: '100%', display:'block', marginTop: '15px'}}>
+                  <span style={{fontSize: '12px', color: '#07f4ff'}}>Server name: </span><span style={{fontSize: '11px', color: '#ffffff'}}>{serverConfig.servername}</span>
+      						</div>
+      						
+      					
+                  
+                </div>
+              </div>
+              
+              {selectedTrack !== '' && (
+                <div style={{ display: 'flex', alignItems: 'flex-end', width: '100%', flexWrap: 'wrap', gap: '15px' }}>
+                  <button onClick={() => setSelectedTrack('')} style={{ marginRight: 'auto', backgroundColor: '#191133', color: '#06f5ff', border: '1px solid #06f5ff', padding: '7px 14px', fontFamily: 'monospace', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>
+                    CHANGE TRACK
+                  </button>
+                  <div>
+                    <label style={{ fontSize: '11px', color: '#914cf2', display: 'block', fontFamily: 'monospace', marginBottom: '4px' }}>SEARCH DRIVER</label>
+                    <input type="text" placeholder="ENTER DRIVER NAME..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} style={{ backgroundColor: '#0a0812', color: '#fff', border: '1px solid #914cf2', padding: '6px 12px', fontFamily: 'monospace', fontSize: '14px', width: '180px' }} />
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11px', color: '#914cf2', display: 'block', fontFamily: 'monospace', marginBottom: '4px' }}>SORT BY CLASS</label>
+                    <select value={selectedClass} onChange={(e) => setSelectedClass(e.target.value)} style={{ backgroundColor: '#0a0812', color: '#fff', border: '1px solid #914cf2', padding: '6px 12px', fontFamily: 'monospace', fontSize: '14px', cursor: 'pointer' }}>
+                      <option value="ALL">🏆 ALL CLASSES</option>
+                      <option value="GT3">GT3</option><option value="GT4">GT4</option><option value="GT2">GT2</option><option value="CUP">CUP</option><option value="ST">SUPER TROFEO</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11px', color: '#914cf2', display: 'block', fontFamily: 'monospace', marginBottom: '4px' }}>WEATHER</label>
+                    <select value={selectedWeather} onChange={(e) => setSelectedWeather(e.target.value)} style={{ backgroundColor: '#0a0812', color: '#fff', border: '1px solid #914cf2', padding: '6px 12px', fontFamily: 'monospace', fontSize: '14px', cursor: 'pointer' }}>
+                      <option value="DRY">☀️ DRY LAPS</option>
+                      <option value="WET">🌧️ WET LAPS</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ fontSize: '11px', color: '#914cf2', display: 'block', fontFamily: 'monospace', marginBottom: '4px' }}>SWITCH CIRCUIT</label>
+                    <select value={selectedTrack} onChange={(e) => setSelectedTrack(e.target.value)} style={{ backgroundColor: '#0a0812', color: '#fff', border: '1px solid #914cf2', padding: '6px 12px', fontFamily: 'monospace', fontSize: '14px', cursor: 'pointer' }}>
+                      {uniqueTracks.map(t => <option key={t} value={t}>📍 {TRACK_NAMES[t.toLowerCase()] || t.toUpperCase()}</option>)}
+                    </select>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {selectedTrack === '' ? (
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '15px' }}>
+                {uniqueTracks.map(trackKey => (
+                  <button 
+                    key={trackKey} 
+                    onClick={() => setSelectedTrack(trackKey)} 
+                    style={{ backgroundColor: '#120d24', border: '1px solid #914cf2', padding: '18px 20px', textAlign: 'left', cursor: 'pointer', height: '100px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', transition: 'all 0.15s ease' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.borderColor = '#ea06ed'; e.currentTarget.style.backgroundColor = '#191133'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
+                    onMouseLeave={(e) => { e.currentTarget.style.borderColor = '#914cf2'; e.currentTarget.style.backgroundColor = '#120d24'; e.currentTarget.style.transform = 'translateY(0)'; }}
+                  >
+                    <span style={{ fontSize: '10px', color: '#06f5ff', fontFamily: 'monospace' }}>CIRCUIT</span>
+                    <span style={{ fontSize: '17px', fontWeight: 'bold', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase' }}>
+                      {TRACK_NAMES[trackKey.toLowerCase()] || trackKey.toUpperCase()}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <>
+                {/* Dynamic Podium Grid */}
+                {currentPage === 1 && searchQuery === '' && baselineUniqueLaps.length > 0 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginBottom: '40px' }}>
+                    {baselineUniqueLaps.slice(0, 3).map((lap, i) => {
+                      const positions = [
+                        { badge: '#06f5ff', text: '🥇 P1 INTERVAL LEADER', bg: '#191133', border: '#06f5ff', glow: 'rgba(49, 199, 205, 0.3)', timerColor: '#06f5ff' },
+                        { badge: '#ea06ed', text: '🥈 P2 PURSUING', bg: '#120d24', border: '#ea06ed', glow: 'rgba(234, 6, 237, 0.2)', timerColor: '#ffffff' },
+                        { badge: '#914cf2', text: '🥉 P3 PURSUING', bg: '#120d24', border: '#914cf2', glow: 'rgba(145, 76, 242, 0.2)', timerColor: '#ffffff' }
+                      ][i];
+                      return (
+                        <div key={`podium-${lap.id}`} style={{ backgroundColor: positions.bg, border: `1px solid ${positions.border}`, padding: '20px', position: 'relative', boxShadow: `0 0 20px ${positions.glow}` }}>
+                          <div style={{ color: positions.badge, fontSize: '11px', fontFamily: 'monospace', marginBottom: '10px', letterSpacing: '0.1em' }}>{positions.text}</div>
+                          <div onClick={() => setActiveDriverModal(lap.driver_name)} style={{ fontSize: '22px', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase', cursor: 'pointer', transition: 'color 0.2s' }}
+                            onMouseEnter={(e) => e.currentTarget.style.color = '#06f5ff'}
+                            onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
+                          >
+                            {lap.driver_name}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#a0a0c0', margin: '4px 0 10px 0', display: 'flex', alignItems: 'center' }}>
+                            <ClassBadge carModel={lap.car_model} />
+                            {CAR_MODELS[lap.car_model] || `Car ID: ${lap.car_model}`}
+                          </div>
+                          <div style={{ fontSize: '11px', color: '#06f5ff', fontFamily: 'monospace', marginBottom: '10px' }}>
+                            TRACK: {TRACK_NAMES[lap.track?.toLowerCase()] || lap.track?.toUpperCase()}
+                          </div>
+                          <div style={{ marginBottom: '14px' }}>
+                            <SectorSplitsDisplay splits={lap.best_splits} />
+                          </div>
+                          <div style={{ fontSize: '28px', fontFamily: 'monospace', color: positions.timerColor, textAlign: 'right', backgroundColor: '#0a0812', padding: '6px 12px', border: '1px solid #914cf2', display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
+                            <WeatherBadge wetlap={lap.wetlap} />
+                            {formatLapTime(lap.best_lap_ms)}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                <div style={{ backgroundColor: '#120d24', border: '1px solid #914cf2' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#0a0812', borderBottom: '2px solid #ea06ed', color: '#ea06ed', fontSize: '12px', fontFamily: 'monospace' }}>
+                        <th style={{ padding: '16px 20px', width: '70px' }}>POS</th>
+                        <th style={{ padding: '16px 20px' }}>DRIVER</th>
+                        <th style={{ padding: '16px 20px' }}>CAR MODEL</th>
+                        <th style={{ padding: '16px 20px', textAlign: 'right' }}>DELTA</th>
+                        <th style={{ padding: '16px 20px', textAlign: 'right' }}>BEST LAP TIME</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedLaps.map((lap, index) => {
+                        const absoluteIndex = startIndex + index;
+                        const isActualFirst = lap.displayPosition === 1;
+                       const {infoStr} = parseSessionId(lap.session_id);
+                        return (
+                          <tr key={lap.id} style={{ borderBottom: '1px solid #1a1233', backgroundColor: isActualFirst ? 'rgba(49, 199, 205, 0.05)' : (absoluteIndex % 2 === 0 ? '#100a20' : '#120d24') }}>
+                            <td style={{ padding: '16px 20px', color: isActualFirst ? '#06f5ff' : '#914cf2', fontSize: '16px', fontStyle: 'italic', backgroundColor: isActualFirst ? 'rgba(49, 199, 205, 0.08)' : 'transparent', borderRight: isActualFirst ? '1px solid #06f5ff' : 'none', verticalAlign: 'top' }}>
+                              {lap.displayPosition.toString().padStart(2, '0')}
+                            </td>
+                            <td style={{ padding: '16px 20px', fontStyle: 'italic', verticalAlign: 'top' }}>
+                              <span onClick={() => setActiveDriverModal(lap.driver_name)} style={{ color: '#ffffff', textTransform: 'uppercase', fontSize: '12px', cursor: 'pointer', transition: 'color 0.2s' }}
+                                onMouseEnter={(e) => e.currentTarget.style.color = '#06f5ff'}
+                                onMouseLeave={(e) => e.currentTarget.style.color = '#ffffff'}
+                              >
+                                {lap.driver_name}
+                              </span>
+                              <div style={{ 
+                                  fontSize: '11px', 
+                                  color: '#a0a0c0', 
+                                  fontFamily: 'monospace', 
+                                  marginTop: '2px',
+                                  letterSpacing: '0.05em',
+                                  fontStyle: 'normal'
+                                }}>
+                                  {infoStr}
+                                </div>
+                            </td>
+                            <td style={{ padding: '16px 20px', color: '#b0b0d0', fontSize: '13px', verticalAlign: 'top' }}>
+                              <ClassBadge carModel={lap.car_model} />{CAR_MODELS[lap.car_model] || `Car ID: ${lap.car_model}`}
+                            </td>
+                            <td style={{ padding: '16px 20px', textAlign: 'right', color: isActualFirst ? '#06f5ff' : '#ea06ed', fontFamily: 'monospace', verticalAlign: 'top' }}>{formatDelta(lap.best_lap_ms, p1Time)}</td>
+                            <td style={{ padding: '16px 20px', textAlign: 'right', fontFamily: 'monospace', fontSize: '16px', color: isActualFirst ? '#06f5ff' : '#ffffff', verticalAlign: 'top' }}>
+                              <div><WeatherBadge wetlap={lap.wetlap} />{formatLapTime(lap.best_lap_ms)}</div>
+                              <SectorSplitsDisplay splits={lap.best_splits} align="right" />
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+
+                  {/* PAGINATION CONTROLS */}
+                  {totalPages > 1 && (
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', backgroundColor: '#0a0812', borderTop: '1px solid #914cf2', fontFamily: 'monospace', fontSize: '12px' }}>
+                      <div style={{ color: '#914cf2' }}>
+                        SHOWING {startIndex + 1} - {Math.min(startIndex + ITEMS_PER_PAGE, finalFilteredLaps.length)} OF {finalFilteredLaps.length} DRIVERS
+                      </div>
+                      <div style={{ display: 'flex', gap: '8px' }}>
+                        <button 
+                          onClick={() => setCurrentPage(p => Math.max(p - 1, 1))} 
+                          disabled={currentPage === 1}
+                          style={{ backgroundColor: currentPage === 1 ? '#120d24' : '#191133', color: currentPage === 1 ? '#555' : '#06f5ff', border: '1px solid #914cf2', padding: '6px 12px', cursor: currentPage === 1 ? 'not-allowed' : 'pointer' }}
+                        >
+                          PREV
+                        </button>
+                        <span style={{ padding: '6px 10px', color: '#ffffff' }}>PAGE {currentPage} OF {totalPages}</span>
+                        <button 
+                          onClick={() => setCurrentPage(p => Math.min(p + 1, totalPages))} 
+                          disabled={currentPage === totalPages}
+                          style={{ backgroundColor: currentPage === totalPages ? '#120d24' : '#191133', color: currentPage === totalPages ? '#555' : '#06f5ff', border: '1px solid #914cf2', padding: '6px 12px', cursor: currentPage === totalPages ? 'not-allowed' : 'pointer' }}
+                        >
+                          NEXT
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
+          </div>
+
+       {/* DRIVER PROFILE MODAL POPUP */}
+      {driverStats && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(10, 8, 18, 0.85)',
+          backdropFilter: 'blur(4px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000,
+          padding: '20px'
+        }}
+        onClick={() => setActiveDriverModal(null)}
+        >
+          <div style={{
+            backgroundColor: '#120d24',
+            border: '1px solid #ea06ed',
+            borderTop: '4px solid #06f5ff',
+            padding: '28px',
+            maxWidth: '480px',
+            width: '100%',
+            boxShadow: '0 0 35px rgba(234, 6, 237, 0.3)',
+            position: 'relative'
+          }}
+          onClick={(e) => e.stopPropagation()}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '20px' }}>
+              <div>
+                <div style={{ fontSize: '11px', color: '#06f5ff', fontFamily: 'monospace', letterSpacing: '0.15em' }}>
+                  DRIVER TELEMETRY PROFILE
+                </div>
+                <h2 style={{ margin: '4px 0 0 0', fontSize: '26px', color: '#ffffff', fontStyle: 'italic', textTransform: 'uppercase' }}>
+                  {driverStats.name}
+                </h2>
+              </div>
+              <button
+                onClick={() => setActiveDriverModal(null)}
+                style={{
+                  backgroundColor: 'transparent',
+                  color: '#ea06ed',
+                  border: 'none',
+                  fontSize: '20px',
+                  fontWeight: 'bold',
+                  cursor: 'pointer',
+                  fontFamily: 'monospace',
+                  lineHeight: '1'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '20px' }}>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>POSITION</div>
+                <div style={{ fontSize: '20px', color: '#06f5ff', fontFamily: 'monospace', fontWeight: 'bold' }}>P{driverStats.position}</div>
+              </div>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>BEST LAP</div>
+                <div style={{ fontSize: '20px', color: '#ffffff', fontFamily: 'monospace', display: 'flex', alignItems: 'center' }}>
+                  <WeatherBadge wetlap={driverStats.wetlap} />
+                  {formatLapTime(driverStats.bestLapMs)}
+                </div>
+              </div>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>DELTA TO P1</div>
+                <div style={{ fontSize: '20px', color: '#ea06ed', fontFamily: 'monospace' }}>{driverStats.delta}</div>
+              </div>
+              <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2' }}>
+                <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace' }}>SESSIONS RECORDED</div>
+                <div style={{ fontSize: '20px', color: '#ffffff', fontFamily: 'monospace' }}>{driverStats.totalSessions}</div>
+              </div>
+            </div>
+
+            {/* Modal Best Sector Splits */}
+            <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2', marginBottom: '12px' }}>
+              <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace', marginBottom: '6px' }}>BEST SECTOR SPLITS</div>
+              <SectorSplitsDisplay splits={driverStats.bestSplits} align="left" />
+            </div>
+
+            <div style={{ backgroundColor: '#0a0812', padding: '12px', border: '1px solid #914cf2', marginBottom: '20px' }}>
+              <div style={{ fontSize: '10px', color: '#914cf2', fontFamily: 'monospace', marginBottom: '6px' }}>CARS DRIVEN</div>
+              <div style={{ fontSize: '13px', color: '#d4d4d4', fontFamily: 'sans-serif' }}>
+                {driverStats.carsDriven.join(', ')}
+              </div>
+            </div>
+
+            <button
+              onClick={() => setActiveDriverModal(null)}
+              style={{
+                width: '100%',
+                backgroundColor: '#191133',
+                color: '#06f5ff',
+                border: '1px solid #06f5ff',
+                padding: '10px',
+                fontFamily: 'monospace',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                letterSpacing: '0.1em',
+                textTransform: 'uppercase'
+              }}
+            >
+              CLOSE PROFILE
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
