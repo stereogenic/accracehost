@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ACC Race Host - Hotlap Leaderboard</title>
+  <title>ACCR-Sync - Hotlap Leaderboard</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&display=swap" rel="stylesheet">
   <!-- Supabase JS Client CDN -->
@@ -15,7 +15,7 @@
   <style>
 /* Core Layout & Typography */
 body {
-  margin: 0;
+  margin: 0 20px 20px 20px;
   background-color: #0b0b0b;
   min-height: 100vh;
   color: #e5e7eb;
@@ -80,12 +80,13 @@ body {
 .live-title {
   font-size: 14px;
   font-weight: bold;
-  color: #9ca3af;
+  color: #ef4444;
   letter-spacing: 0.22em;
 }
 
 .live-title-highlight {
   color: #ffffff;
+  font-size:12px;
 }
 
 .server-info-box {
@@ -698,25 +699,7 @@ body {
       
       const ITEMS_PER_PAGE = 25;
 
-      // State to hold configuration file values
-      const [serverConfig, setServerConfig] = useState({ servername: 'LOADING...', sitelogo: '' });
-
-      
-
-      // Fetch configuration data on mount
-      useEffect(() => {
-        async function loadConfig() {
-          try {
-            const response = await fetch('config.json');
-            if (!response.ok) throw new Error('Could not load config.json');
-            const config = await response.json();
-            setServerConfig(config);
-          } catch (err) {
-            console.error('Error loading config:', err);
-          }
-        }
-        loadConfig();
-      }, []);
+   
 
       useEffect(() => { setCurrentPage(1); }, [selectedTrack, selectedClass, selectedWeather, searchQuery]);
 
@@ -801,7 +784,7 @@ body {
 
       return (
         <div className="main-container">
-        <a href="./"><img width="100%" src={serverConfig.sitelogo} alt="Server Logo" /></a>
+        <a href="./"><img width="100%" src="logo.png" alt="Server Logo" /></a>
          
           &nbsp;
           
@@ -810,13 +793,10 @@ body {
               <div>
                 <div className="live-indicator-wrapper">
                   <span className="live-dot"></span>
-                  <span className="live-title">Live ACC Race Host - <span className="live-title-highlight">HOTLAP LEADERBOARD</span></span>
+                  <span className="live-title">Live <span className="live-title-highlight">HOTLAP LEADERBOARD</span></span>
                 </div>
                 
-                <div className="server-info-box">
-                  <span className="server-label">Server name: </span>
-                  <span className="server-text">{serverConfig.servername}</span>
-                </div>
+           
               </div>
 
           
