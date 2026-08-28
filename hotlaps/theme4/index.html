@@ -855,8 +855,8 @@ body {
                   {baselineUniqueLaps.slice(0, 3).map((lap, i) => {
                     const positions = [
                       { badge: '#22c55e', text: '🥇 P1 INTERVAL LEADER', bg: '#141414', border: '#22c55e', glow: '#22c55e', timerColor: '#22c55e' },
-                      { badge: '#22c55e', text: '🥈 P2 PURSUING', bg: '#141414', border: '#ec4899', glow: '#2c2c2c', timerColor: '#ffffff' },
-                      { badge: '#22c55e', text: '🥉 P3 PURSUING', bg: '#141414', border: '#ec4899', glow: '#2c2c2c', timerColor: '#ffffff' }
+                      { badge: '#22c55e', text: '🥈 P2 PURSUING', bg: '#141414', border: '#22c55e', glow: '#2c2c2c', timerColor: '#ffffff' },
+                      { badge: '#22c55e', text: '🥉 P3 PURSUING', bg: '#141414', border: '#22c55e', glow: '#2c2c2c', timerColor: '#ffffff' }
                     ][i];
                     return (
                       <div key={`podium-${lap.id}`} className="podium-card" style={{ backgroundColor: positions.bg, border: `1px solid ${positions.border}`, boxShadow: `0 0 20px ${positions.glow}` }}>
