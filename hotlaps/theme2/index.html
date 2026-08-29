@@ -1,21 +1,4 @@
 <!DOCTYPE html>
-<script>
-	const [serverConfig, setServerConfig] = useState({ bookmarkname: 'LOADING...' });
-
-      useEffect(() => {
-        async function loadConfig() {
-          try {
-            const response = await fetch('options.json');
-            if (!response.ok) throw new Error('Could not load options.json');
-            const config = await response.json();
-            setServerConfig(config);
-          } catch (err) {
-            console.error('Error loading config:', err);
-          }
-        }
-        loadConfig();
-      }, []);
-</script>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
