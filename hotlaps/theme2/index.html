@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hotlap Leaderboard</title>
+  <title>ACCR-Sync - Hotlap Leaderboard</title>
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@600;700&display=swap" rel="stylesheet">
   <!-- Supabase JS Client CDN -->
@@ -19,12 +19,13 @@
   <script type="text/babel">
     const { useState, useEffect } = React;
 
-    const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
-    const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY_PLACEHOLDER__';
+    //const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
+    //const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY_PLACEHOLDER__';
+
+    const SUPABASE_URL = 'https://klduwrrqoyuyridfiutd.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZHV3cnJxb3l1eXJpZGZpdXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM1MTYsImV4cCI6MjEwMzE3OTUxNn0.Sj1MLZ0qoDhzv7boiqTabIE6N1oesleF1Dr3g-XT1K8';
 
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    
-    
 
     function formatLapTime(ms) {
       if (!ms || ms === 2147483647) return '——';
@@ -275,7 +276,7 @@
                   
                   <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
                     <span style={{ height: '7px', width: '7px', backgroundColor: '#06f5ff', borderRadius: '50%', display: 'inline-block', boxShadow: '0 0 8px #06f5ff' }}></span>
-                    <span style={{ fontSize: '14px', fontWeight: 'bold',color: '#ef4444', letterSpacing: '0.22em' }}>Live <span style={{color: '#ffffff'}}>HOTLAP LEADERBOARD</span></span>
+                    <span style={{ fontSize: '12px', fontWeight: 'bold',color: '#ef4444', letterSpacing: '0.22em' }}>Live <span style={{color: '#ffffff'}}>HOTLAP LEADERBOARD</span></span>
                   </div>
                   
                 
