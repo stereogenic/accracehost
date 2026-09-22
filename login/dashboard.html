@@ -37,11 +37,11 @@
     <script>
         const SUPABASE_URL = 'https://klduwrrqoyuyridfiutd.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZHV3cnJxb3l1eXJpZGZpdXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM1MTYsImV4cCI6MjEwMzE3OTUxNn0.Sj1MLZ0qoDhzv7boiqTabIE6N1oesleF1Dr3g-XT1K8';
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         async function initDashboard() {
             // 1. Check Auth Session
-            const { data: { session }, error } = await supabase.auth.getSession();
+            const { data: { session }, error } = await supabaseClient.auth.getSession();
             if (error || !session) {
                 window.location.href = 'index.html'; // Kick out if not logged in
                 return;
@@ -84,7 +84,7 @@
 
         // Logout functionality
         document.getElementById('logout-btn').addEventListener('click', async () => {
-            await supabase.auth.signOut();
+            await supabaseClient.auth.signOut();
             window.location.href = 'index.html';
         });
     </script>
