@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Settings - ACC Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <h1>Account Settings</h1>
+    <p><a href="dashboard.html">&larr; Back to Dashboard</a></p>
+    <hr>
+
+    <!-- Update Username Form -->
+    <form id="username-form">
+        <h3>Change Username</h3>
+        <input type="text" id="new-username" placeholder="New Username" required><br><br>
+        <button type="submit">Update Username</button>
+    </form>
+
+    <hr>
+
+    <!-- Update Email Form -->
+    <form id="email-form">
+        <h3>Change Email Address</h3>
+        <input type="email" id="new-email" placeholder="New Email Address" required><br><br>
+        <button type="submit">Update Email</button>
+    </form>
+
+    <hr>
+
+    <!-- Update Password Form -->
+    <form id="password-form">
+        <h3>Change Password</h3>
+        <input type="password" id="new-password" placeholder="New Password" required><br><br>
+        <button type="submit">Update Password</button>
+    </form>
+
+    <p id="status-msg" style="color: green; margin-top: 20px;"></p>
+
+    <script>
+        const SUPABASE_URL = 'https://klduwrrqoyuyridfiutd.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZHV3cnJxb3l1eXJpZGZpdXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM1MTYsImV4cCI6MjEwMzE3OTUxNn0.Sj1MLZ0qoDhzv7boiqTabIE6N1oesleF1Dr3g-XT1K8';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const statusMsg = document.getElementById('status-msg');
+
+        async function verifyAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'index.html';
+            }
+        }
+        verifyAuth();
+
+        // 1. Update Username in Profiles table
+        document.getElementById('username-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newUsername = document.getElementById('new-username').value;
+            const { data: { user } } = await supabase.auth.getUser();
+
+            const { error } = await supabase
+                .from('profiles')
+                .update({ username: newUsername })
+                .eq('id', user.id);
+
+            if (error) {
+                statusMsg.style.color = 'red';
+                statusMsg.innerText = 'Error: ' + error.message;
+            } else {
+                statusMsg.style.color = 'green';
+                statusMsg.innerText = 'Username updated successfully!';
+            }
+        });
+
+        // 2. Update Email via Supabase Auth
+        document.getElementById('email-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newEmail = document.getElementById('new-email').value;
+
+            const { error } = await supabase.auth.updateUser({ email: newEmail });
+
+            if (error) {
+                statusMsg.style.color = 'red';
+                statusMsg.innerText = 'Error: ' + error.message;
+            } else {
+                statusMsg.style.color = 'green';
+                statusMsg.innerText = 'Email update requested! Check your new email inbox to confirm.';
+            }
+        });
+
+        // 3. Update Password via Supabase Auth
+        document.getElementById('password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newPassword = document.getElementById('new-password').value;
+
+            const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+            if (error) {
+                statusMsg.style.color = 'red';
+                statusMsg.innerText = 'Error: ' + error.message;
+            } else {
+                statusMsg.style.color = 'green';
+                statusMsg.innerText = 'Password updated successfully!';
+            }
+        });
+    </script>
+</body>
+</html>
