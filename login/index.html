@@ -71,11 +71,17 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
 
-            const { data, error } = await supabaseClient.auth.signUp({
-                email,
-                password,
-                options: { data: { username } }
-            });
+            const { data, error } =
+                await supabaseClient.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        emailRedirectTo: 'https://accracehost.com/login/index.html',
+                        data: {
+                            username: username
+                        }
+                    }
+                });
 
             if (error) {
                 document.getElementById('error-msg').innerText = error.message;
