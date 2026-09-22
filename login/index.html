@@ -37,11 +37,12 @@
         const SUPABASE_URL = 'https://klduwrrqoyuyridfiutd.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImtsZHV3cnJxb3l1eXJpZGZpdXRkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDM1MTYsImV4cCI6MjEwMzE3OTUxNn0.Sj1MLZ0qoDhzv7boiqTabIE6N1oesleF1Dr3g-XT1K8';
         
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        //const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
         // Check if user is already logged in, redirect to dashboard if so
         async function checkSession() {
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 window.location.href = 'dashboard.html';
             }
@@ -54,7 +55,7 @@
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
 
-            const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
             
             if (error) {
                 document.getElementById('error-msg').innerText = error.message;
@@ -70,7 +71,7 @@
             const email = document.getElementById('signup-email').value;
             const password = document.getElementById('signup-password').value;
 
-            const { data, error } = await supabase.auth.signUp({
+            const { data, error } = await supabaseClient.auth.signUp({
                 email,
                 password,
                 options: { data: { username } }
