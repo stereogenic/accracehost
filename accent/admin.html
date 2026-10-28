@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACC Leaderboard Manager</title>
+    <!-- Include Supabase JS Client via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+    	:root {
+            --bg-body: #05070b;
+            --bg-card: #0d1117;
+            --bg-card-hover: #161b22;
+            --border-subtle: rgba(56, 189, 248, 0.12);
+            --accent-primary: #38bdf8; /* Electric Cyan */
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --accent-gold: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #cbd5e1;
+		}
+		 hr.rgbhr{
+		    width:100%;
+		    height:1px;
+		    border:none;
+		    background:linear-gradient(to right, #16181f 0%, var(--accent-primary) 50%, #16181f 100%);
+		    }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0px auto;
+            padding: 10px;
+            background-color: #12161f;
+            color: #e1e1e6;
+        }
+        .header {
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		}
+		
+		.logo-link {
+            display: block;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            text-decoration: none;
+            text-align: center;
+		}
+		
+		.logo-text {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1;
+            border: 1px solid #183542;
+            border-radius: 8px;
+            padding: 18px 0px 16px 0px;
+            margin: 0px 0px 20px 0px;
+		}
+
+		.logo-title {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            padding-bottom: 5px;
+            background: linear-gradient(135deg, #ffffff 0%, #9fb6c9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+		}
+
+		.logo-subtitle {
+		    margin-top: 10px;
+		    font-size: 16px;
+		    font-weight: 700;
+		    letter-spacing: 6px;
+		    color: #49bff5;
+		}
+		.subtitle {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+		}
+
+        h2, h3, h4 {
+            color: #f8f9fa;
+            border-bottom: 2px solid #2b6cb0;
+            padding-bottom: 5px;
+            margin-top: 0px;
+        }
+        h2 {
+            text-align: center;
+            border-bottom: none;
+            color: #63b3ed;
+            margin-bottom: 25px;
+        }
+        
+        /* Navigation Header Styles */
+        .nav-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            background: #1a202c;
+            padding: 15px;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .nav-btn {
+            background-color: #2d3748;
+            color: #cbd5e0;
+            border: 1px solid #4a5568;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background-color: #4a5568;
+            color: #fff;
+        }
+        .nav-btn.active {
+            background-color: #3182ce;
+            color: white;
+            border-color: #3182ce;
+        }
+        .nav-btn2 {
+            background-color: #2d3748;
+            color: #cbd5e0;
+            border: 1px solid #4a5568;
+            padding: 4px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            transition: all 0.2s;
+        }
+        
+        .nav-btn-manual {
+            background-color: #2d3748;
+            color: #cbd5e0;
+            border: 1px solid #4a5568;
+            padding: 4px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            transition: all 0.2s;
+        }
+        .nav-btn-manual:hover {
+            background-color: #4a5568;
+            color: #fff;
+        }
+        .nav-btn-manual.active {
+            background-color: #3182ce;
+            color: white;
+            border-color: #3182ce;
+        }
+
+        .section-box {
+            background: #1a202c;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .edit-box {
+            background: #202634;
+            border: 1px dashed #d69e2e;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .edit-box h4 {
+            margin-top: 0;
+            color: #d69e2e;
+            border-bottom: 1px solid #4a5568;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #cbd5e0;
+            font-size: 15px;
+        }
+        select, input[type="text"], input[type="password"], input[type="number"], input[type="datetime-local"] {
+            width: 100%;
+            padding: 9px;
+            box-sizing: border-box;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            background-color: #2d3748;
+            color: #fff;
+        }
+        select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, input[type="datetime-local"]:focus {
+            border-color: #63b3ed;
+            outline: none;
+        }
+
+        /* Custom Styled File Picker */
+        .file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            padding: 6px 10px;
+        }
+        .file-upload-wrapper input[type="file"] {
+            display: none;
+        }
+        .custom-file-btn {
+            background-color: #4a5568;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: background 0.2s;
+            border: none;
+        }
+        .custom-file-btn:hover {
+            background-color: #718096;
+        }
+        #fileNameDisplay {
+            font-size: 13px;
+            color: #a0aec0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        button {
+            padding: 9px 15px;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #2b6cb0;
+        }
+        button.btn-danger {
+            background-color: #e53e3e;
+        }
+        button.btn-danger:hover {
+            background-color: #c53030;
+        }
+        button.btn-warning {
+            background-color: #d69e2e;
+            color: #1a202c;
+        }
+        button.btn-warning:hover {
+            background-color: #b7791f;
+        }
+        button.btn-secondary {
+            background-color: #4a5568;
+        }
+        button.btn-secondary:hover {
+            background-color: #718096;
+        }
+        button.btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #2d3748;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #4a5568;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+        th {
+            background-color: #202634;
+            color: #63b3ed;
+        }
+        .status-msg {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Pagination Controls */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            background: #202634;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #4a5568;
+        }
+        .pagination-bar span {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 10px;
+            padding-bottom: 11px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+        }
+        .footer-copy {
+            color: #475569;
+        }
+
+        /* LOGIN MODAL OVERLAY */
+        #loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 7, 11, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .login-box {
+            background: #1a202c;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #2d3748;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .login-box h3 {
+            color: #63b3ed;
+            border-bottom: 2px solid #2b6cb0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+      	/* Compact Admin Checkbox */
+				.checkbox-inline {
+				    display: flex;
+				    align-items: center;
+				    gap: 10px;
+				    margin-bottom: 12px;
+				}
+
+				.checkbox-inline label {
+				    display: inline-block;
+				    margin: 0;
+				    color: #cbd5e0;
+				    font-size: 14px;
+				    cursor: pointer;
+				}
+
+				.checkbox-inline input[type="checkbox"] {
+				    appearance: none;
+				    -webkit-appearance: none;
+				    width: 16px;
+				    height: 16px;
+				    min-width: 16px;
+				    margin: 0;
+				    padding: 0;
+				    border: 1px solid #4a5568;
+				    border-radius: 3px;
+				    background: #2d3748;
+				    cursor: pointer;
+				    display: inline-grid;
+				    place-content: center;
+				    transition: background 0.15s, border-color 0.15s;
+				}
+
+				.checkbox-inline input[type="checkbox"]:hover {
+				    border-color: #63b3ed;
+				}
+
+				.checkbox-inline input[type="checkbox"]:checked {
+				    background: #3182ce;
+				    border-color: #63b3ed;
+				}
+
+				.checkbox-inline input[type="checkbox"]::before {
+				    content: "";
+				    width: 4px;
+				    height: 8px;
+				    border: solid #ffffff;
+				    border-width: 0 2px 2px 0;
+				    transform: rotate(45deg) scale(0);
+				    margin-top: -2px;
+				}
+
+				.checkbox-inline input[type="checkbox"]:checked::before {
+				    transform: rotate(45deg) scale(1);
+				}
+
+				.checkbox-inline input[type="checkbox"]:focus-visible {
+				    outline: 2px solid #63b3ed;
+				    outline-offset: 2px;
+				}
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN OVERLAY -->
+    <div id="loginOverlay">
+        <div class="login-box">
+            <h3>Admin Login</h3>
+            <div class="form-group">
+                <label for="loginUsername">Username:</label>
+                <input type="text" id="loginUsername" placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="loginPassword">Password:</label>
+                <input type="password" id="loginPassword" placeholder="Enter password">
+            </div>
+            <button id="loginBtn" style="width: 100%; margin-top: 10px;">Log In</button>
+            <div id="loginStatus" class="status-msg"></div>
+        </div>
+    </div>
+
+    <div class="header">
+        <a href="./" class="logo-link">
+            <div class="logo-text">
+                <div id="commnameDisplay" class="logo-title"></div>
+                <div id="commsubDisplay" class="logo-subtitle">CHAMPIONSHIP LEADERBOARDS</div>
+                <p id="commSloganDisplay" class="subtitle"></p>
+            </div>
+        </a>
+    </div>
+<div>
+    <div style="display:inline-block; text-align:left; margin-bottom:14px; width:50%;">
+    <a style="text-decoration:none;" href="manual.html" target="_blank" class="nav-btn-manual">Admin Guide</a>
+  </div>
+    
+    <div style="display:inline-block; text-align:right; margin-bottom:14px; width:49%;">
+    <button class="nav-btn2" id="logout-btn">Logout</button>
+  </div>
+  </div>
+  
+    <!-- NAVIGATION HEADER -->
+    <div class="nav-header">
+        <button class="nav-btn active" onclick="switchSection('section-config', this)">Configuration</button>
+        <button class="nav-btn" onclick="switchSection('section-leagues', this)">Leagues</button>
+        <button class="nav-btn" onclick="switchSection('section-championships', this)">Championships</button>
+        <button class="nav-btn" onclick="switchSection('section-races', this)">Race Management</button>
+        <button class="nav-btn" onclick="switchSection('section-schedule', this)">Schedules</button>
+        <button class="nav-btn" onclick="switchSection('section-drivers', this)">Drivers</button>
+        <button class="nav-btn" onclick="switchSection('section-upload', this)">Upload Race Results</button>
+    </div>
+    
+    <!-- SECTION 0: SITE CONFIGURATION -->
+    <div id="section-config" class="section-box app-section">
+        <h3>Website</h3>
+        <div class="form-group">
+            <label for="pagetitleInput">Leaderboard Page Title:</label>
+            <input type="text" id="pagetitleInput" placeholder="e.g. ALBA Racing Team | Leaderboard">
+        </div>
+        <div class="form-group">
+            <label for="commnameInput">Community Name:</label>
+            <input type="text" id="commnameInput" placeholder="e.g. The Scottish Legends">
+        </div>
+        <div class="form-group">
+            <label for="commsubInput">Sub Title:</label>
+            <input type="text" id="commsubInput" placeholder="e.g. Championships & Leaderboards">
+        </div>
+        <div class="form-group">
+            <label for="commsloganInput">Community Slogan:</label>
+            <input type="text" id="commsloganInput" placeholder="e.g. Assetto Corsa Competizione - Community Leaderboard">
+        </div>
+        <div class="form-group">
+            <label for="logourlInput">Alternative Logo URL: <span style="font-size:14px; color:#8E9AAE;">Default logo.png</span></label>
+            <input type="text" id="logourlInput" placeholder="https://www.website.com/image.png">
+        </div>
+        <br>
+        <div class="form-group checkbox-inline">
+		    <label for="useLogo">Use Logo Image:</label>
+		    <input type="checkbox" id="useLogo"/>
+				</div>
+				<br>
+        <div class="form-group">
+            <label for="themeColorInput">Theme Accent:</label>
+            <input type="color" id="themeColorInput">
+        </div>
+        
+        <br>
+        <h3>Social Icon Links</h3>
+        <div class="form-group">
+            <label for="discordInput">Discord:</label>
+            <input type="text" id="discordInput" placeholder="Insert https://... link or Leave blank to Disable icon">
+        </div>
+        <div class="form-group">
+            <label for="youtubeInput">Youtube:</label>
+            <input type="text" id="youtubeInput" placeholder="Insert https://... link or Leave blank to Disable icon">
+        </div>
+        <div class="form-group">
+            <label for="instagramInput">Instagram:</label>
+            <input type="text" id="instagramInput" placeholder="Insert https://... link or Leave blank to Disable icon">
+        </div>
+        <div class="form-group">
+            <label for="twitchInput">Twitch:</label>
+            <input type="text" id="twitchInput" placeholder="Insert https://... link or Leave blank to Disable icon">
+        </div>
+        <br>
+        <h3>Leaderboard</h3>
+        <div class="form-group">
+            <label for="localtzInput">Time Zone:</label>
+            <input type="text" id="localtzInput" placeholder="e.g. GMT, UTC+1 etc..">
+        </div>
+        <br>
+        <h3>ACCR-Sync</h3>
+        <div class="form-group checkbox-inline">
+		    <label for="useAccr">Enable Hotlap Leaderboard:</label>
+		    <input type="checkbox" id="useAccr"/>
+				</div>
+        <br>
+        <h3>Admin</h3>
+        <div class="form-group">
+            <label for="newAdminPasswordInput">New Admin Password (Leave blank to keep current):</label>
+            <input type="password" id="newAdminPasswordInput" placeholder="Enter new password">
+        </div>
+        <br>
+        <button id="saveConfigBtn">Save Configuration</button>
+        <div id="configStatus" class="status-msg"></div>
+    </div>
+
+    <!-- SECTION 1: LEAGUES MANAGEMENT -->
+    <div id="section-leagues" class="section-box app-section hidden">
+        <h3>League Management</h3>
+        <div class="form-group">
+            <label for="leagueNameInput">New League Name:</label>
+            <input type="text" id="leagueNameInput" placeholder="e.g. Community Pro League">
+        </div>
+        <button id="addLeagueBtn">Create League</button>
+        <div id="leagueStatus" class="status-msg"></div>
+
+        <br>
+        <h4>Leagues</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>League Name</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="leaguesTableBody">
+                <tr><td colspan="2">Loading leagues...</td></tr>
+            </tbody>
+        </table>
+   
+        <br>
+        <div id="leagueEditBox" class="edit-box">
+            <h4>Edit League</h4>
+            <input type="hidden" id="editLeagueId">
+            <div class="form-group">
+                <label for="editLeagueNameInput">League Name:</label>
+                <input type="text" id="editLeagueNameInput">
+            </div>
+            <button id="updateLeagueBtn">Save Changes</button>
+            <button class="btn-secondary" onclick="cancelEdit('leagueEditBox')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- SECTION 2: CHAMPIONSHIPS MANAGEMENT -->
+    <div id="section-championships" class="section-box app-section hidden">
+        <h3>Championship Management</h3>
+        <div class="form-group">
+            <label for="leagueSelect">Select Parent League:</label>
+            <select id="leagueSelect">
+                <option value="">Loading leagues...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="championshipNameInput">New Championship Name:</label>
+            <input type="text" id="championshipNameInput" placeholder="e.g. Community GT3 Cup">
+        </div>
+        <div class="form-group">
+            <label for="championshipSeasonInput">Season:</label>
+            <input type="number" id="championshipSeasonInput" placeholder="e.g. 1">
+        </div>
+        <div class="form-group">
+            <label for="championshipEntryListSelect">Assign Entry List (Optional):</label>
+            <select id="championshipEntryListSelect">
+                <option value="">-- None --</option>
+            </select>
+        </div>
+        <button id="addChampionshipBtn">Create Championship</button>
+        <div id="championshipStatus" class="status-msg"></div>
+        
+        <br>
+
+        <h4>Championships</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Championship Name</th>
+                    <th>Season</th>
+                    <th>Status</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="championshipsTableBody">
+                <tr><td colspan="5">Loading championships...</td></tr>
+            </tbody>
+        </table>
+        <br>
+        
+        <div id="championshipEditBox" class="edit-box">
+            <h4>Edit Championship</h4>
+            <input type="hidden" id="editChampionshipId">
+            <div class="form-group">
+                <label for="editParentLeagueSelect">Parent League:</label>
+                <select id="editParentLeagueSelect">
+                    <option value="">Loading leagues...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editChampionshipNameInput">Championship Name:</label>
+                <input type="text" id="editChampionshipNameInput">
+            </div>
+            <div class="form-group">
+                <label for="editChampionshipSeasonInput">Season:</label>
+                <input type="number" id="editChampionshipSeasonInput">
+            </div>
+            <div class="form-group">
+                <label for="editChampionshipEntryListSelect">Assign Entry List:</label>
+                <select id="editChampionshipEntryListSelect">
+                    <option value="">-- None --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="seasonComplete">Season Complete:</label>
+                <input type="checkbox" id="seasonComplete"/>
+            </div>
+            <button id="updateChampionshipBtn">Save Changes</button>
+            <button class="btn-secondary" onclick="cancelEdit('championshipEditBox')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- SEASON SCHEDULE MANAGEMENT -->
+    <div id="section-schedule" class="section-box app-section hidden">
+        <h3>Season Schedule Management</h3>
+        <div class="form-group">
+            <label for="scheduleChampSelect">Select Championship:</label>
+            <select id="scheduleChampSelect" onchange="loadScheduleTable()">
+                <option value="">Loading championships...</option>
+            </select>
+        </div>
+
+        <div style="background: #202634; padding: 15px; border-radius: 6px; border: 1px solid #4a5568; margin-bottom: 20px;">
+            <h4 style="margin-top:0; color: #63b3ed; border-bottom: 1px solid #4a5568; padding-bottom: 5px;">Add Scheduled Race</h4>
+            <div class="form-group">
+                <label for="schedRoundInput">Round Number: (Auto)</label>
+                <input type="number" id="schedRoundInput" placeholder="e.g. 1" readonly>
+            </div>
+            <div class="form-group">
+                <label for="schedTrackInput">Track Name:</label>
+                <select id="schedTrackInput">
+                    <option value="">-- Select Track --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="schedDateInput">Race Date & Time:</label>
+                <input type="datetime-local" id="schedDateInput">
+            </div>
+            <div class="form-group">
+            	<div style="display:inline-block;">
+                	<label for="schedPracticeInput">Practice Minutes:</label>
+                    <input type="number" id="schedPracticeInput" placeholder="Leave Blank to Disable">
+                </div>
+                <div style="display:inline-block;">
+                	<label for="schedQualiInput">Qualifying Minutes:</label>
+                    <input type="number" id="schedQualiInput">
+                </div>
+                <div style="display:inline-block;">
+                	<label for="schedRaceInput">Race Minutes:</label>
+                    <input type="number" id="schedRaceInput">
+                </div>
+            </div>
+            <div class="form-group" style="margin:20px 0px 20px 0px;">
+            	<table>
+                	<tr>
+                	<td><label for="pitRequired">Mandatory Pitstop:</label></td>
+                	<td><input type="checkbox" id="pitRequired"/></td>
+                    </tr>
+                    <tr>
+                	<td><label for="fuelRequired">Fuel Required:</label></td>
+                	<td><input type="checkbox" id="fuelRequired"/></td>
+                	</tr>
+                	<tr>
+                	<td><label for="tyresRequired">Tyres Required:</label></td>
+                	<td><input type="checkbox" id="tyresRequired"/></td>
+                	</tr>
+                </table>
+            </div>
+    
+            <button id="addScheduleBtn">Add Race to Schedule</button>
+            <div id="scheduleStatus" class="status-msg"></div>
+        </div>
+
+        <h4>Scheduled Races</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Round</th>
+                    <th>Track</th>
+                    <th>Date & Time</th>
+                    <th>Requirements</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="scheduleTableBody">
+                <tr><td colspan="4" style="text-align: center;">Select a championship above to view schedule.</td></tr>
+            </tbody>
+        </table>
+
+        <div id="scheduleEditBox" class="edit-box">
+            <h4>Edit Scheduled Race</h4>
+            <input type="hidden" id="editScheduleId">
+            <div class="form-group">
+                <label for="editSchedRoundInput">Round Number:</label>
+                <input type="number" id="editSchedRoundInput">
+            </div>
+            <div class="form-group">
+                <label for="editSchedTrackInput">Track Name:</label>
+                <select id="editSchedTrackInput">
+                    <option value="">-- Select Track --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editSchedDateInput">Race Date & Time:</label>
+                <input type="datetime-local" id="editSchedDateInput">
+            </div>
+			<div class="form-group">
+            	<div style="display:inline-block;">
+                	<label for="editschedPracticeInput">Practice Minutes:</label>
+                    <input type="number" id="editschedPracticeInput" placeholder="Leave Blank to Disable">
+                </div>
+                <div style="display:inline-block;">
+                	<label for="editschedQualiInput">Qualifying Minutes:</label>
+                    <input type="number" id="editschedQualiInput">
+                </div>
+                <div style="display:inline-block;">
+                	<label for="editschedRaceInput">Race Minutes:</label>
+                    <input type="number" id="editschedRaceInput">
+                </div>
+            </div>
+             <div class="form-group" style="margin:20px 0px 20px 0px;">
+            	<table>
+                	<tr>
+                	<td><label for="editpitRequired">Mandatory Pitstop:</label></td>
+                	<td><input type="checkbox" id="editpitRequired"/></td>
+                    </tr>
+                    <tr>
+                	<td><label for="editfuelRequired">Fuel Required:</label></td>
+                	<td><input type="checkbox" id="editfuelRequired"/></td>
+                	</tr>
+                	<tr>
+                	<td><label for="edittyresRequired">Tyres Required:</label></td>
+                	<td><input type="checkbox" id="edittyresRequired"/></td>
+                	</tr>
+                </table>
+            </div>
+
+            <button id="updateScheduleBtn">Save Changes</button>
+            <button class="btn-secondary" onclick="cancelEdit('scheduleEditBox')">Cancel</button>
+        </div>
+    </div>
+
+    <!-- SECTION 3: UPLOAD RACE RESULTS JSON -->
+    <div id="section-upload" class="section-box app-section hidden">
+        <h3>Upload Race Results (JSON)</h3>
+        <div class="form-group">
+            <label for="championshipSelect">Select Championship:</label>
+            <select id="championshipSelect">
+                <option value="">Loading championships...</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="raceInput">Round Number:</label>
+            <input type="number" id="raceInput" placeholder="Auto Generated" readonly>
+        </div>
+        <div class="form-group">
+            <label for="pointsSystemSelect">Select Points System:</label>
+            <select id="pointsSystemSelect">
+                <option value="imsa">IMSA Points System (350 for P1 down to 1)</option>
+                <option value="none">No Points (0 Points for All)</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="uploadEntryListSelect">Assign Drivers to Entry List (Optional):</label>
+            <select id="uploadEntryListSelect">
+                <option value="">-- None (Do not assign entry list) --</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Select ACC Result JSON File:</label>
+            <div class="file-upload-wrapper">
+                <label for="jsonFile" class="custom-file-btn">Browse File</label>
+                <input type="file" id="jsonFile" accept=".json">
+                <span id="fileNameDisplay">No file chosen</span>
+            </div>
+        </div>
+        <button id="uploadBtn">Upload Results</button>
+        <div id="uploadStatus" class="status-msg"></div>
+    </div>
+
+    <!-- SECTION 4: UPLOADED RACES / SESSIONS MANAGEMENT -->
+    <div id="section-races" class="section-box app-section hidden">
+        <h3>Race & Session Management</h3>
+        <p style="font-size: 13px; color: #a0aec0;">Select a league, then a championship, and finally an uploaded session to manage its metadata or edit driver positions and points.</p>
+        
+        <div class="form-group" style="margin-top: 15px;">
+            <label for="manageLeagueSelect"><strong>Select League:</strong></label>
+            <select id="manageLeagueSelect" onchange="onManageLeagueChange()">
+                <option value="">-- Loading leagues... --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="manageChampSelect"><strong>Select Championship:</strong></label>
+            <select id="manageChampSelect" onchange="onManageChampChange()" disabled>
+                <option value="">-- First select a league --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="sessionSelectDropdown"><strong>Select Race Session:</strong></label>
+            <select id="sessionSelectDropdown" onchange="onSessionDropdownChange()" disabled>
+                <option value="">-- First select a championship --</option>
+            </select>
+        </div>
+
+        <div id="sessionEditBox" class="edit-box">
+            <h4>Edit Uploaded Session Details</h4>
+            <input type="hidden" id="editOriginalSessionId">
+            <div class="form-group">
+                <label for="editSessionIdInput">Session File Name (ID):</label>
+                <input type="text" id="editSessionIdInput">
+            </div>
+            <div class="form-group">
+                <label for="editSessionChampionshipSelect">Championship:</label>
+                <select id="editSessionChampionshipSelect">
+                    <option value="">Loading championships...</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="editRaceIdInput">Race Number:</label>
+                <input type="text" id="editRaceIdInput">
+            </div>
+            <button id="updateSessionBtn">Save Changes</button>
+            <button class="btn-secondary" onclick="cancelEdit('sessionEditBox')">Cancel</button>
+        </div>
+
+        <div id="sessionEditorContainer" class="hidden" style="margin-top: 20px; border-top: 1px solid #4a5568; padding-top: 15px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h4 style="margin: 0; border: none; color: #63b3ed;">Driver Results Editor</h4>
+                <div>
+                    <button class="btn-warning btn-sm" id="editSessionMetaBtn">Edit Session Details</button>
+                    <button class="btn-danger btn-sm" onclick="deleteSelectedSession()">Delete Entire Session</button>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Driver Name</th>
+                        <th>Car Model</th>
+                        <th style="width: 120px;">Final Position</th>
+                        <th style="width: 120px;">Points</th>
+                        <th style="width: 120px;">Penalty Secs</th>
+                        <th style="text-align: right; width: 100px;">Action</th>
+                    </tr>
+                </thead>
+                <tbody id="sessionDriversTableBody">
+                    <tr><td colspan="5" style="text-align: center;">Select a session above to load driver results.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- DRIVER ENTRY-LIST MANAGEMENT SECTION -->
+    <div id="section-drivers" class="section-box app-section hidden">
+        <h3>Driver Entry-List Management</h3>
+
+        <!-- Create Entry List Form -->
+        <div style="background: #202634; padding: 15px; border-radius: 6px; border: 1px solid #4a5568; margin-bottom: 20px;">
+            <h4 style="margin-top:0; color: #63b3ed; border-bottom: 1px solid #4a5568; padding-bottom: 5px;">Create New Entry List</h4>
+            <div class="form-group">
+                <label for="entrylistNameInput">Entry List Name:</label>
+                <input type="text" id="entrylistNameInput" placeholder="e.g. Pro Cup Grid, GT3 Series">
+            </div>
+            <button id="addEntryListBtn">Create Entry List</button>
+            <div id="entryListStatus" class="status-msg"></div>
+        </div>
+
+        <!-- Existing Entry Lists Table -->
+        <h4>Entry Lists:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Entry List Name</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="entryListsTableBody">
+                <tr><td colspan="3" style="text-align: center;">Loading entry lists...</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Edit Entry List Box -->
+        <div id="entryListEditBox" class="edit-box">
+            <h4>Edit Entry List</h4>
+            <input type="hidden" id="editEntryListId">
+            <div class="form-group">
+                <label for="editEntryListNameInput">Entry List Name:</label>
+                <input type="text" id="editEntryListNameInput">
+            </div>
+            <button id="updateEntryListBtn">Save Changes</button>
+            <button class="btn-secondary" onclick="cancelEdit('entryListEditBox')">Cancel</button>
+        </div>
+
+        <br>
+        <!-- Registered Drivers Table with Search & Pagination -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h4 style="margin: 0; border: none;">Drivers & Entry-List Assignments (Auto-Saves on Change)</h4>
+            <div style="width: 320px;">
+                <input type="text" id="driverSearchInput" placeholder="Search by name, Steam ID, or entry list..." oninput="onDriverSearchInput()" style="padding: 6px 10px; font-size: 13px;">
+            </div>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Driver Name</th>
+                    <th>Steam ID</th>
+                    <th>Assigned Entry Lists (Check to Assign)</th>
+                    <th style="text-align:right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody id="driverListTableBody">
+                <tr><td colspan="4" style="text-align: center;">Loading drivers...</td></tr>
+            </tbody>
+        </table>
+
+        <!-- Pagination Bar -->
+        <div class="pagination-bar">
+            <button class="btn-secondary btn-sm" id="prevPageBtn" onclick="changeDriverPage(-1)">Previous</button>
+            <span id="driverPageIndicator">Page 1 of 1</span>
+            <button class="btn-secondary btn-sm" id="nextPageBtn" onclick="changeDriverPage(1)">Next</button>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-copy">
+                <p id="commNameDisplay"></p>Powered by ACC Community Leaderboard Manager v1.0
+            </div>
+        </div>
+    </footer>
+
+    <script>
+    	
+        const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
+        const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY_PLACEHOLDER__';
+        
+				const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        
+        
+        async function verifyAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+            }
+        }
+        verifyAuth();
+        
+        
+        
+        const CAR_MODELS = {
+            '0': 'Porsche 991 GT3 R', '1': 'Mercedes-AMG GT3 (2015)', '2': 'Ferrari 488 GT3', '3': 'Audi R8 LMS', '4': 'Lamborghini Huracán GT3',
+            '5': 'McLaren 650S GT3', '6': 'Nissan GT-R NISMO GT3 (2018)', '7': 'BMW M6 GT3', '8': 'Bentley Continental GT3 (2018)', '9': 'Porsche 991 II GT3 Cup',
+            '10': 'Nissan GT-R NISMO GT3 (2017)', '11': 'Bentley Continental GT3 (2016)', '12': 'Aston Martin V12 Vantage GT3', '13': 'Lamborghini Gallardo R-EX',
+            '14': 'Jaguar G3', '15': 'Lexus RC F GT3', '16': 'Lamborghini Huracán GT3 Evo', '17': 'Honda NSX GT3', '18': 'Lamborghini Huracán Super Trofeo',
+            '19': 'Audi R8 LMS Evo', '20': 'Aston Martin V8 Vantage GT3', '21': 'Honda NSX GT3 Evo', '22': 'McLaren 720S GT3', '23': 'Porsche 991.2 GT3 R',
+            '24': 'Ferrari 488 GT3 Evo', '25': 'Mercedes-AMG GT3 Evo', '26': 'Ferrari 488 Challenge Evo', '27': 'BMW M2 CS Racing', '28': 'Porsche 992 GT3 Cup',
+            '29': 'Lamborghini Huracán Super Trofeo EVO2', '30': 'BMW M4 GT3', '31': 'Audi R8 LMS Evo II', '32': 'Ferrari 296 GT3', '33': 'Lamborghini Huracán GT3 EVO2',
+            '34': 'Porsche 992 GT3 R', '35': 'McLaren 720S GT3 Evo', '36': 'Ford Mustang GT3', '50': 'Alpine A110 GT4', '51': 'Aston Martin Vantage GT4',
+            '52': 'Audi R8 LMS GT4', '53': 'BMW M4 GT4', '55': 'Chevrolet Camaro GT4.R', '56': 'Ginetta G55 GT4', '57': 'KTM X-Bow GT4', '58': 'Maserati MC GT4',
+            '59': 'McLaren 570S GT4', '60': 'Mercedes-AMG GT4', '61': 'Porsche 718 Cayman GT4 Clubsport', '80': 'Audi R8 LMS GT2', '82': 'KTM X-Bow GT2',
+            '83': 'Maserati MC20 GT2', '84': 'Mercedes-AMG GT2', '85': 'Porsche 911 GT2 RS Clubsport Evo', '86': 'Porsche 935'
+        };
+        
+        const TRACK_NAMES = {
+            'barcelona': 'Barcelona', 'brands_hatch': 'Brands Hatch', 'circuit_of_the_americas': 'COTA',
+            'donington': 'Donington Park', 'hungaroring': 'Hungaroring', 'indianapolis': 'Indianapolis',
+            'kyalami': 'Kyalami', 'laguna_seca': 'Laguna Seca', 'misano': 'Misano', 'monza': 'Monza Circuit',
+            'mount_panorama': 'Bathurst', 'nurburgring': 'Nürburgring', 'nurburgring_24h': 'Nordschleife',
+            'oulton_park': 'Oulton Park', 'paul_ricard': 'Paul Ricard', 'red_bull_ring': 'Red Bull Ring',
+            'silverstone': 'Silverstone', 'snetterton': 'Snetterton', 'spa': 'Spa-Francorchamps',
+            'suzuka': 'Suzuka', 'valencia': 'Valencia', 'watkins_glen': 'Watkins Glen', 'zandvoort': 'Zandvoort', 'zolder': 'Zolder'
+        };
+
+        let leaguesMap = {};
+        let champsMap = {};
+        let champsSMap = {};
+        let allChampionshipsData = [];
+        let allUploadedSessionsData = [];
+        let currentSessionDrivers = [];
+        let activeSessionRecordMeta = null;
+        let allEntryListsData = [];
+        let allDriversData = [];
+
+        let currentDriverPage = 1;
+        const driversPerPage = 20;
+        let driverSearchQuery = '';
+
+        
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            await supabaseClient.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        function initDashboard() {
+            populateTrackDropdowns();
+            refreshAllData();
+            document.getElementById('loginOverlay').style.display = 'none';
+        }
+        initDashboard();
+
+        function switchSection(sectionId, btnElement) {
+            document.querySelectorAll('.app-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (!btn.classList.contains('btn-danger')) btn.classList.remove('active');
+            });
+            if (btnElement) {
+                btnElement.classList.add('active');
+            }
+        }
+
+        function populateTrackDropdowns() {
+            const selects = [document.getElementById('schedTrackInput'), document.getElementById('editSchedTrackInput')];
+            const sortedTracks = Object.entries(TRACK_NAMES).sort((a, b) => a[1].localeCompare(b[1]));
+
+            selects.forEach(select => {
+                if (!select) return;
+                const currentVal = select.value;
+                select.innerHTML = '<option value="">-- Select Track --</option>';
+                sortedTracks.forEach(([key, name]) => {
+                    const option = document.createElement('option');
+                    option.value = key;
+                    option.textContent = name;
+                    select.appendChild(option);
+                });
+                if (currentVal) select.value = currentVal;
+            });
+        }
+
+        document.getElementById('jsonFile').addEventListener('change', function(e) {
+            const fileNameDisplay = document.getElementById('fileNameDisplay');
+            
+            if (e.target.files.length > 0) {
+                fileNameDisplay.textContent = e.target.files[0].name;
+                fileNameDisplay.style.color = '#e2e8f0';
+            } else {
+                fileNameDisplay.textContent = 'No file chosen';
+                fileNameDisplay.style.color = '#a0aec0';
+            }
+        });
+
+        function cancelEdit(boxId) {
+            document.getElementById(boxId).style.display = 'none';
+        }
+
+        async function refreshAllData() {
+            await loadConfig();
+            await loadLeagues();
+            await loadEntryLists();
+            await loadChampionships();
+            await loadUploadedRaces();
+            await loadDriversList();
+            loadScheduleTable();
+        }
+
+        // ==========================================
+        // 0. SITE CONFIGURATION LOGIC
+        // ==========================================
+        async function loadConfig() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('clmconfig')
+                    .select('*')
+                    .limit(1)
+                    .single();
+
+                if (error) {
+                    console.warn('No configuration found in clmconfig table:', error.message);
+                    return;
+                }
+
+                if (data) {
+                    document.getElementById('commnameDisplay').innerHTML = data.commname || '';
+                    document.getElementById('commSloganDisplay').innerHTML = data.commslogan || '';
+                    document.getElementById('commsubDisplay').innerHTML = data.commsubtitle || '';
+                    
+                    document.getElementById('pagetitleInput').value = data.pagetitle || '';
+                    document.getElementById('commnameInput').value = data.commname || '';
+                    document.getElementById('commsloganInput').value = data.commslogan || '';
+                    document.getElementById('localtzInput').value = data.local_tz || '';
+                    document.getElementById('useLogo').checked = Boolean(data.uselogo);
+                    document.getElementById('themeColorInput').value = data.usercolor || '';
+                    document.getElementById('commsubInput').value = data.commsubtitle || '';
+                    
+                    document.getElementById('discordInput').value = data.discord || '';
+                    document.getElementById('youtubeInput').value = data.youtube || '';
+                    document.getElementById('instagramInput').value = data.instagram || '';
+                    document.getElementById('twitchInput').value = data.twitch || '';
+                    
+                    document.getElementById('useAccr').checked = Boolean(data.accrsync);
+                    
+                    document.getElementById('logourlInput').value = data.logourl || 'logo.png';
+                }
+            } catch (err) {
+                console.error('Error loading site configuration:', err);
+            }
+        }
+
+        document.getElementById('saveConfigBtn').addEventListener('click', async () => {
+            const pageTitle = document.getElementById('pagetitleInput').value.trim();
+            const commName = document.getElementById('commnameInput').value.trim();
+            const commSlogan = document.getElementById('commsloganInput').value.trim();
+            const tzlocal = document.getElementById('localtzInput').value.trim();
+            const newAdminPassword = document.getElementById('newAdminPasswordInput').value.trim();
+            const statusDiv = document.getElementById('configStatus');
+            const uselogocheck = document.getElementById('useLogo').checked;
+            const themeColor = document.getElementById('themeColorInput').value.trim();
+            const commSubT = document.getElementById('commsubInput').value.trim();
+            
+            const discordLink = document.getElementById('discordInput').value.trim();
+            const youtubeLink = document.getElementById('youtubeInput').value.trim();
+            const instagramLink = document.getElementById('instagramInput').value.trim();
+            const twitchLink = document.getElementById('twitchInput').value.trim();
+            
+            const useAccrcheck = document.getElementById('useAccr').checked;
+            
+            const logoUrl = document.getElementById('logourlInput').value.trim();
+
+            statusDiv.style.color = '#e2e8f0';
+            statusDiv.innerText = 'Saving configuration...';
+
+            try {
+                const { data: existingData, error: fetchError } = await supabaseClient
+                    .from('clmconfig')
+                    .select('id')
+                    .limit(1);
+
+                if (fetchError) throw fetchError;
+
+                let error;
+                const payload = {
+                    pagetitle: pageTitle,
+                    commname: commName,
+                    commslogan: commSlogan,
+                    local_tz: tzlocal,
+                    uselogo: uselogocheck,
+                    usercolor: themeColor,
+                    commsubtitle: commSubT,
+                    discord: discordLink,
+                    youtube: youtubeLink,
+                    instagram: instagramLink,
+                    twitch: twitchLink,
+                    accrsync: useAccrcheck,
+                    logourl: logoUrl
+                };
+
+                if (existingData && existingData.length > 0) {
+                    const rowId = existingData[0].id;
+                    const res = await supabaseClient
+                        .from('clmconfig')
+                        .update(payload)
+                        .eq('id', rowId);
+                    error = res.error;
+                } else {
+                    const res = await supabaseClient
+                        .from('clmconfig')
+                        .insert([payload]);
+                    error = res.error;
+                }
+
+                if (error) throw error;
+
+                // If a new password was provided, update the password
+                if (newAdminPassword) {
+                	
+	              
+
+				            const { error: pwdError } = await supabaseClient.auth.updateUser({ password: newAdminPassword });
+
+
+                    if (pwdError) throw pwdError;
+                    document.getElementById('newAdminPasswordInput').value = '';
+                }
+
+                statusDiv.style.color = '#68d391';
+                statusDiv.innerText = 'Configuration saved successfully!';
+                loadConfig();
+            } catch (err) {
+                statusDiv.style.color = '#fc8181';
+                statusDiv.innerText = 'Error saving configuration: ' + err.message;
+            }
+        });
+
+        // ==========================================
+        // 1. LEAGUES LOGIC (CRUD)
+        // ==========================================
+        async function loadLeagues() {
+            const leagueSelect = document.getElementById('leagueSelect');
+            const editParentLeagueSelect = document.getElementById('editParentLeagueSelect');
+            const manageLeagueSelect = document.getElementById('manageLeagueSelect');
+            const tbody = document.getElementById('leaguesTableBody');
+            
+            const currentManageLeagueVal = manageLeagueSelect.value;
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('leagues')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) throw error;
+
+                leaguesMap = {};
+                leagueSelect.innerHTML = '<option value="">-- Select League --</option>';
+                editParentLeagueSelect.innerHTML = '<option value="">-- Select League --</option>';
+                manageLeagueSelect.innerHTML = '<option value="">-- Select League --</option>';
+                tbody.innerHTML = '';
+
+                if (data && data.length > 0) {
+                    data.forEach(league => {
+                        leaguesMap[league.id] = league.league_name;
+
+                        const option = document.createElement('option');
+                        option.value = league.id;
+                        option.textContent = league.league_name;
+                        leagueSelect.appendChild(option);
+
+                        const editOpt = document.createElement('option');
+                        editOpt.value = league.id;
+                        editOpt.textContent = league.league_name;
+                        editParentLeagueSelect.appendChild(editOpt);
+
+                        const manageOpt = document.createElement('option');
+                        manageOpt.value = league.id;
+                        manageOpt.textContent = league.league_name;
+                        manageLeagueSelect.appendChild(manageOpt);
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${escapeHtml(league.league_name)}</td>
+                            <td class="actions" style="text-align:right;">
+                                <button class="btn-warning btn-sm" onclick="populateEditLeague(${league.id}, '${escapeQuote(league.league_name)}')">Edit</button>
+                                <button class="btn-danger btn-sm" onclick="deleteLeague(${league.id})">Delete</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    if (currentManageLeagueVal && leaguesMap[currentManageLeagueVal]) {
+                        manageLeagueSelect.value = currentManageLeagueVal;
+                    }
+                } else {
+                    leagueSelect.innerHTML = '<option value="">No leagues found</option>';
+                    editParentLeagueSelect.innerHTML = '<option value="">No leagues found</option>';
+                    manageLeagueSelect.innerHTML = '<option value="">No leagues found</option>';
+                    tbody.innerHTML = '<tr><td colspan="2">No leagues found</td></tr>';
+                }
+            } catch (err) {
+                console.error('Error loading leagues:', err);
+                tbody.innerHTML = '<tr><td colspan="2" style="color:#fc8181;">Error loading leagues</td></tr>';
+            }
+        }
+
+        document.getElementById('addLeagueBtn').addEventListener('click', async () => {
+            const leagueName = document.getElementById('leagueNameInput').value.trim();
+            const statusDiv = document.getElementById('leagueStatus');
+
+            if (!leagueName) { alert('Please enter a league name.'); return; }
+
+            statusDiv.style.color = '#e2e8f0';
+            statusDiv.innerText = 'Saving league...';
+
+            try {
+                const { error } = await supabaseClient.from('leagues').insert([{ league_name: leagueName }]);
+                if (error) throw error;
+
+                statusDiv.style.color = '#68d391';
+                statusDiv.innerText = `League "${leagueName}" created successfully!`;
+                document.getElementById('leagueNameInput').value = '';
+                refreshAllData();
+            } catch (err) {
+                statusDiv.style.color = '#fc8181';
+                statusDiv.innerText = 'Error: ' + err.message;
+            }
+        });
+
+        window.populateEditLeague = function(id, name) {
+            document.getElementById('editLeagueId').value = id;
+            document.getElementById('editLeagueNameInput').value = name;
+            document.getElementById('leagueEditBox').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('leagueEditBox').offsetTop - 50, behavior: 'smooth' });
+        };
+
+        document.getElementById('updateLeagueBtn').addEventListener('click', async () => {
+            const id = document.getElementById('editLeagueId').value;
+            const newName = document.getElementById('editLeagueNameInput').value.trim();
+
+            if (!newName) { alert('League name cannot be empty.'); return; }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('leagues')
+                    .update({ league_name: newName })
+                    .eq('id', id);
+
+                if (error) throw error;
+                alert('League updated successfully!');
+                document.getElementById('leagueEditBox').style.display = 'none';
+                refreshAllData();
+            } catch (err) {
+                alert('Error updating league: ' + err.message);
+            }
+        });
+
+        window.deleteLeague = async function(id) {
+            if (!confirm('Are you sure you want to delete this league? This will delete all associated championships, schedules, race results, and remove championships from driver lists.')) return;
+
+            try {
+                const { data: champsToDelete, error: fetchChampsErr } = await supabaseClient
+                    .from('championships')
+                    .select('id')
+                    .eq('league_id', id);
+
+                if (fetchChampsErr) throw fetchChampsErr;
+
+                if (champsToDelete && champsToDelete.length > 0) {
+                    const champIds = champsToDelete.map(c => c.id);
+
+                    await supabaseClient.from('seasonschedule').delete().in('championshipid', champIds);
+                    await supabaseClient.from('champresults').delete().in('championshipid', champIds);
+
+                    const { data: driversData, error: driverFetchErr } = await supabaseClient
+                        .from('driverlist')
+                        .select('driversid, championshipids');
+
+                    if (driverFetchErr) throw driverFetchErr;
+
+                    if (driversData && driversData.length > 0) {
+                        for (const driver of driversData) {
+                            let champIdsArray = driver.championshipids || [];
+                            if (!Array.isArray(champIdsArray)) continue;
+
+                            const updatedChampIds = champIdsArray.filter(
+                                cId => !champIds.includes(cId) && !champIds.includes(Number(cId)) && !champIds.includes(String(cId))
+                            );
+
+                            if (updatedChampIds.length !== champIdsArray.length) {
+                                await supabaseClient
+                                    .from('driverlist')
+                                    .update({ championshipids: updatedChampIds })
+                                    .eq('driversid', driver.driversid);
+                            }
+                        }
+                    }
+
+                    await supabaseClient.from('championships').delete().eq('league_id', id);
+                }
+
+                const { error: leagueErr } = await supabaseClient.from('leagues').delete().eq('id', id);
+                if (leagueErr) throw leagueErr;
+
+                alert('League and all associated records deleted successfully!');
+                refreshAllData();
+            } catch (err) {
+                console.error('Error deleting league and cascading records:', err);
+                alert('Error deleting league: ' + err.message);
+            }
+        };
+
+        // ==========================================
+        // 2. CHAMPIONSHIPS LOGIC (CRUD)
+        // ==========================================
+        async function loadChampionships() {
+            const championshipSelect = document.getElementById('championshipSelect');
+            const editSessionChampSelect = document.getElementById('editSessionChampionshipSelect');
+            const scheduleChampSelect = document.getElementById('scheduleChampSelect');
+            const tbody = document.getElementById('championshipsTableBody');
+            
+            const currentSchedChampVal = scheduleChampSelect.value;
+            const currentUploadChampVal = championshipSelect.value;
+
+            try {
+                const { data, error } = await supabaseClient
+						    .from('championships')
+						    .select('*')
+						    .order('league_id', { ascending: true })
+						    .order('championship_name', { ascending: true })
+						    .order('season', { ascending: true });
+
+                if (error) throw error;
+                
+                champsMap = {};
+                champsSMap = {};
+                allChampionshipsData = data || [];
+
+                championshipSelect.innerHTML = '<option value="">-- Select Championship --</option>';
+                editSessionChampSelect.innerHTML = '<option value="">-- Select Championship --</option>';
+                scheduleChampSelect.innerHTML = '<option value="">-- Select Championship --</option>';
+                tbody.innerHTML = '';
+
+                if (allChampionshipsData.length > 0) {
+                    allChampionshipsData.forEach(champ => {
+                        champsMap[champ.id] = champ.championship_name;
+                        champsSMap[champ.id] = champ.season;
+                        
+                        const leagueNameDisplay = leaguesMap[champ.league_id] || (champ.league_id ?? 'None');
+                        const champLabel = `${escapeHtml(leagueNameDisplay)} | ${champ.championship_name} - Season ${champ.season}`;
+
+                        const option = document.createElement('option');
+                        option.value = champ.id;                  
+                        option.textContent = champLabel;
+                        championshipSelect.appendChild(option);
+
+                        const editOpt = document.createElement('option');
+                        editOpt.value = champ.id;
+                        editOpt.textContent = champLabel;
+                        editSessionChampSelect.appendChild(editOpt);
+
+                        const schedOpt = document.createElement('option');
+                        schedOpt.value = champ.id;
+                        schedOpt.textContent = champLabel;
+                        scheduleChampSelect.appendChild(schedOpt);
+
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${escapeHtml(champ.championship_name)}<br><span style="font-size:12px; color: var(--text-muted);">${escapeHtml(leagueNameDisplay)}</span></td>
+                            <td>${champ.season}</td>
+                            <td>${champ.season_complete ? 'Complete' : 'Active'}</td>
+                            <td class="actions" style="text-align:right;">
+                                <button class="btn-warning btn-sm" onclick="populateEditChampionship(${champ.id}, '${escapeQuote(champ.championship_name)}', '${champ.league_id}', '${champ.season}', ${champ.season_complete}, ${champ.entrylist_id || 'null'})">Edit</button>
+                                <button class="btn-danger btn-sm" onclick="deleteChampionship(${champ.id})">Delete</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+
+                    if (currentSchedChampVal) scheduleChampSelect.value = currentSchedChampVal;
+                    if (currentUploadChampVal) championshipSelect.value = currentUploadChampVal;
+                } else {
+                    championshipSelect.innerHTML = '<option value="">No championships found</option>';
+                    editSessionChampSelect.innerHTML = '<option value="">No championships found</option>';
+                    scheduleChampSelect.innerHTML = '<option value="">No championships found</option>';
+                    tbody.innerHTML = '<tr><td colspan="5">No championships found</td></tr>';
+                }
+
+                onManageLeagueChange();
+            } catch (err) {
+                console.error('Error loading championships:', err);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:#fc8181;">Error loading championships</td></tr>';
+            }
+        }
+
+        document.getElementById('addChampionshipBtn').addEventListener('click', async () => {
+            const leagueId = document.getElementById('leagueSelect').value;
+            const championshipName = document.getElementById('championshipNameInput').value.trim();
+            const championshipSeason = document.getElementById('championshipSeasonInput').value;
+            const entryListId = document.getElementById('championshipEntryListSelect').value;
+            const statusDiv = document.getElementById('championshipStatus');
+
+            if (!leagueId) { alert('Please select a parent league.'); return; }
+            if (!championshipName) { alert('Please enter a championship name.'); return; }
+            if (!championshipSeason) { alert('Please enter a Season.'); return; }
+
+            statusDiv.style.color = '#e2e8f0';
+            statusDiv.innerText = 'Saving championship...';
+
+            try {
+                const { error } = await supabaseClient
+                    .from('championships')
+                    .insert([{ 
+                        championship_name: championshipName, 
+                        league_id: leagueId, 
+                        season: championshipSeason, 
+                        season_complete: false,
+                        entrylist_id: entryListId ? parseInt(entryListId, 10) : null 
+                    }]);
+
+                if (error) throw error;
+
+                statusDiv.style.color = '#68d391';
+                statusDiv.innerText = `Championship "${championshipName}" added successfully!`;
+                document.getElementById('championshipNameInput').value = '';
+                document.getElementById('championshipSeasonInput').value = '';
+                document.getElementById('championshipEntryListSelect').value = '';
+                refreshAllData();
+            } catch (err) {
+                statusDiv.style.color = '#fc8181';
+                statusDiv.innerText = 'Error: ' + err.message;
+            }
+        });
+
+        window.populateEditChampionship = function(id, name, leagueId, season, seasonComplete, entrylistId) {
+            document.getElementById('editChampionshipId').value = id;
+            document.getElementById('editChampionshipNameInput').value = name;
+            document.getElementById('editParentLeagueSelect').value = leagueId;
+            document.getElementById('editChampionshipSeasonInput').value = (!season || season === 'null' || season === 'undefined') ? '' : season;
+            document.getElementById('seasonComplete').checked = Boolean(seasonComplete);
+            document.getElementById('editChampionshipEntryListSelect').value = (entrylistId && entrylistId !== 'null' && entrylistId !== 'undefined') ? entrylistId : '';
+            document.getElementById('championshipEditBox').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('championshipEditBox').offsetTop - 50, behavior: 'smooth' });
+        };
+
+        document.getElementById('updateChampionshipBtn').addEventListener('click', async () => {
+            const id = document.getElementById('editChampionshipId').value;
+            const newName = document.getElementById('editChampionshipNameInput').value.trim();
+            const newSeason = document.getElementById('editChampionshipSeasonInput').value;
+            const newLeagueId = document.getElementById('editParentLeagueSelect').value;
+            const newSeasonComplete = document.getElementById('seasonComplete').checked;
+            const newEntryListId = document.getElementById('editChampionshipEntryListSelect').value;
+
+            if (!newName) { alert('Championship name cannot be empty.'); return; }
+            if (!newLeagueId) { alert('Please select a parent league.'); return; }
+            if (!newSeason) { alert('Please select a season.'); return; }
+						
+            try {
+                const { error } = await supabaseClient
+                    .from('championships')
+                    .update({ 
+                        championship_name: newName, 
+                        league_id: newLeagueId, 
+                        season: newSeason, 
+                        season_complete: newSeasonComplete,
+                        entrylist_id: newEntryListId ? parseInt(newEntryListId, 10) : null 
+                    })
+                    .eq('id', id);
+
+                if (error) throw error;
+                alert('Championship updated successfully!');
+                document.getElementById('championshipEditBox').style.display = 'none';
+                refreshAllData();
+            } catch (err) {
+                alert('Error updating championship: ' + err.message);
+            }
+        });
+
+        window.deleteChampionship = async function(id) {
+            if (!confirm('Are you sure you want to delete this championship? This will delete all associated schedules, race results, and remove this championship from driver lists.')) return;
+
+            try {
+                await supabaseClient.from('seasonschedule').delete().eq('championshipid', id);
+                await supabaseClient.from('champresults').delete().eq('championshipid', id);
+
+                const { data: driversData, error: driverFetchErr } = await supabaseClient
+                    .from('driverlist')
+                    .select('driversid, championshipids');
+
+                if (driverFetchErr) throw driverFetchErr;
+
+                if (driversData && driversData.length > 0) {
+                    for (const driver of driversData) {
+                        let champIdsArray = driver.championshipids || [];
+                        if (!Array.isArray(champIdsArray)) continue;
+
+                        const updatedChampIds = champIdsArray.filter(
+                            cId => String(cId) !== String(id) && Number(cId) !== Number(id)
+                        );
+
+                        if (updatedChampIds.length !== champIdsArray.length) {
+                            await supabaseClient
+                                .from('driverlist')
+                                .update({ championshipids: updatedChampIds })
+                                .eq('driversid', driver.driversid);
+                        }
+                    }
+                }
+
+                const { error: champErr } = await supabaseClient.from('championships').delete().eq('id', id);
+                if (champErr) throw champErr;
+
+                alert('Championship and all associated records deleted successfully!');
+                refreshAllData();
+            } catch (err) {
+                console.error('Error deleting championship and cascading records:', err);
+                alert('Error deleting championship: ' + err.message);
+            }
+        };
+
+        // ==========================================
+        // SEASON SCHEDULE MANAGEMENT LOGIC
+        // ==========================================
+        async function loadScheduleTable() {
+            const champId = document.getElementById('scheduleChampSelect').value;
+            const tbody = document.getElementById('scheduleTableBody');
+            document.getElementById('scheduleEditBox').style.display = 'none';
+            
+            document.getElementById('scheduleChampSelect').addEventListener('change', () => {
+				    loadScheduleTable();
+				    setNextRaceId();
+			});
+
+            if (!champId) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Select a championship above to view schedule.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">Loading schedule...</td></tr>';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('seasonschedule')
+                    .select('*')
+                    .eq('championshipid', champId)
+                    .order('raceid', { ascending: true });
+
+                if (error) throw error;
+
+                tbody.innerHTML = '';
+
+                if (data && data.length > 0) {
+                    data.forEach(item => {
+                        const formattedDate = item.racedate
+										    ? item.racedate.substring(8, 10) + '/' +
+										      item.racedate.substring(5, 7) + '/' +
+										      item.racedate.substring(0, 4) + ' ' +
+										      item.racedate.substring(11, 16)
+										    : 'TBD';
+                        
+                        const friendlyTrack = getTrackName(item.trackname);
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>Round ${item.raceid}</td>
+                            <td>${escapeHtml(friendlyTrack)}</td>
+                            <td>${formattedDate}</td>
+                            <td>Pit Stop: ${item.pitReq ? '&#9989' : '&#10060'} &nbsp; Fuel: ${item.fuelReq ? '&#9989' : '&#10060'} &nbsp; Tyres: ${item.tyresReq ? '&#9989' : '&#10060'} <br>
+                            <span style="font-size:12px;">
+                            <span style="color:#38bdf8;">Practice:</span> ${item.practicetimelength} <span style="color:var(--accent-gold);">Mins</span> | 
+                            <span style="color:#38bdf8;">Qualifying:</span> ${item.qualitimelength} <span style="color:var(--accent-gold);">Mins</span> | 
+                            <span style="color:#38bdf8;">Race:</span> ${item.racetimelength} <span style="color:var(--accent-gold);">Mins</span>
+                            </span></td>
+                            <td class="actions" style="text-align:right;">
+                                <button class="btn-warning btn-sm" onclick="populateEditSchedule(${item.id}, ${item.raceid}, '${escapeQuote(item.trackname)}', '${item.racedate || ''}', ${item.pitReq}, ${item.fuelReq}, ${item.tyresReq}, ${item.racetimelength}, ${item.qualitimelength}, ${item.practicetimelength})">Edit</button>
+                                <button class="btn-danger btn-sm" onclick="deleteScheduleItem(${item.id})">Delete</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No scheduled races found for this championship.</td></tr>';
+                }
+            } catch (err) {
+                console.error('Error loading schedule:', err);
+                tbody.innerHTML = '<tr><td colspan="4" style="color:#fc8181; text-align: center;">Error loading schedule records.</td></tr>';
+            }
+        }
+
+        document.getElementById('addScheduleBtn').addEventListener('click', async () => {
+            const champId = document.getElementById('scheduleChampSelect').value;
+            const round = document.getElementById('schedRoundInput').value.trim();
+            const track = document.getElementById('schedTrackInput').value;
+            const racedate = document.getElementById('schedDateInput').value;
+            const statusDiv = document.getElementById('scheduleStatus');
+            const addPracticeTime = document.getElementById('schedPracticeInput').value || 0;
+            const addQualiTime = document.getElementById('schedQualiInput').value;
+            const addRaceTime = document.getElementById('schedRaceInput').value;
+            const addpitReq = document.getElementById('pitRequired').checked;
+            const addfuelReq = document.getElementById('fuelRequired').checked;
+            const addtyresReq = document.getElementById('tyresRequired').checked;
+
+            if (!champId) { alert('Please select a championship first.'); return; }
+            if (!round) { alert('Please enter a round number.'); return; }
+            if (!track) { alert('Please select a track.'); return; }
+            if (!addRaceTime) { alert('Please Enter a Race Time.'); return; }
+            if (!addQualiTime) { alert('Please Enter a Qualifying Time.'); return; }
+
+            statusDiv.style.color = '#e2e8f0';
+            statusDiv.innerText = 'Adding scheduled race...';
+
+            try {
+                const { error } = await supabaseClient
+                    .from('seasonschedule')
+                    .insert([{
+                        championshipid: champId,
+                        raceid: parseInt(round, 10),
+                        trackname: track,
+                        racedate: racedate ? new Date(racedate).toISOString() : null,
+                        pitReq: addpitReq,
+                        fuelReq: addfuelReq,
+                        tyresReq: addtyresReq,
+                        racetimelength: addRaceTime,
+                        qualitimelength: addQualiTime,
+                        practicetimelength: addPracticeTime
+                    }]);
+
+                if (error) throw error;
+
+                statusDiv.style.color = '#68d391';
+                statusDiv.innerText = 'Scheduled race added successfully!';
+                
+                document.getElementById('schedTrackInput').value = '';
+                document.getElementById('schedDateInput').value = '';
+                document.getElementById('schedQualiInput').value = '';
+                document.getElementById('schedRaceInput').value = '';
+                document.getElementById('schedPracticeInput').value = '';
+                await setNextRaceId();
+                loadScheduleTable();
+            } catch (err) {
+                statusDiv.style.color = '#fc8181';
+                statusDiv.innerText = 'Error: ' + err.message;
+            }
+        });
+
+        window.populateEditSchedule = function(id, raceid, trackname, racedate, pitReq, fuelReq, tyresReq, racetimelength, qualitimelength, practicetimelength) {
+            document.getElementById('editScheduleId').value = id;
+            document.getElementById('editSchedRoundInput').value = raceid;
+            document.getElementById('editSchedTrackInput').value = trackname;
+            document.getElementById('editpitRequired').checked = Boolean(pitReq);
+            document.getElementById('editfuelRequired').checked = Boolean(fuelReq);
+            document.getElementById('edittyresRequired').checked = Boolean(tyresReq);
+            document.getElementById('editschedRaceInput').value = racetimelength;
+            document.getElementById('editschedQualiInput').value = qualitimelength;
+            document.getElementById('editschedPracticeInput').value = practicetimelength;
+            
+            if (racedate && racedate !== 'null' && racedate !== 'undefined') {
+                const dt = new Date(racedate);
+                const tzOffset = dt.getTimezoneOffset() * 60000;
+                const localISOTime = (new Date(dt - tzOffset)).toISOString().slice(0, 16);
+                document.getElementById('editSchedDateInput').value = localISOTime;
+            } else {
+                document.getElementById('editSchedDateInput').value = '';
+            }
+
+            document.getElementById('scheduleEditBox').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('scheduleEditBox').offsetTop - 50, behavior: 'smooth' });
+        };
+				
+        document.getElementById('updateScheduleBtn').addEventListener('click', async () => {
+            const id = document.getElementById('editScheduleId').value;
+            const round = document.getElementById('editSchedRoundInput').value.trim();
+            const track = document.getElementById('editSchedTrackInput').value;
+            const racedate = document.getElementById('editSchedDateInput').value;
+            const pitstopRequired = document.getElementById('editpitRequired').checked;
+            const pitfuelRequired = document.getElementById('editfuelRequired').checked;
+            const pittyresRequired = document.getElementById('edittyresRequired').checked;
+            const editRaceTime = document.getElementById('editschedRaceInput').value;
+            const editQualiTime = document.getElementById('editschedQualiInput').value;
+            const editPracticeTime = document.getElementById('editschedPracticeInput').value || 0;
+
+            if (!round) { alert('Round number cannot be empty.'); return; }
+            if (!track) { alert('Please select a track.'); return; }
+            if (!editRaceTime) { alert('Please Enter a Race Time.'); return; }
+            if (!editQualiTime) { alert('Please Enter a Qualifying Time.'); return; }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('seasonschedule')
+                    .update({
+                        raceid: parseInt(round, 10),
+                        trackname: track,
+                        racedate: racedate ? new Date(racedate).toISOString() : null,
+                        pitReq: pitstopRequired,
+                        fuelReq: pitfuelRequired,
+                        tyresReq: pittyresRequired,
+                        racetimelength: editRaceTime,
+                        qualitimelength: editQualiTime,
+                        practicetimelength: editPracticeTime
+                    })
+                    .eq('id', id);
+
+                if (error) throw error;
+                alert('Scheduled race updated successfully!');
+                document.getElementById('scheduleEditBox').style.display = 'none';
+                loadScheduleTable();
+            } catch (err) {
+                alert('Error updating schedule record: ' + err.message);
+            }
+        });
+				
+        window.deleteScheduleItem = async function(id) {
+            if (!confirm('Are you sure you want to delete this scheduled race?')) return;
+
+            try {
+                const { error } = await supabaseClient.from('seasonschedule').delete().eq('id', id);
+                if (error) throw error;
+                alert('Scheduled race deleted successfully!');
+                loadScheduleTable();
+            } catch (err) {
+                alert('Error deleting scheduled race: ' + err.message);
+            }
+        };
+        
+        async function setNextRaceId() {
+		    const champId = document.getElementById('scheduleChampSelect').value;
+		    const roundInput = document.getElementById('schedRoundInput');
+
+		    if (!champId) {
+		        roundInput.value = '';
+		        return;
+		    }
+
+		    try {
+		        const { data, error } = await supabaseClient
+		            .from('seasonschedule')
+		            .select('raceid')
+		            .eq('championshipid', champId)
+		            .order('raceid', { ascending: false })
+		            .limit(1);
+
+		        if (error) throw error;
+
+		        let nextRaceId = 1;
+		        if (data && data.length > 0 && data[0].raceid != null) {
+		            nextRaceId = parseInt(data[0].raceid, 10) + 1;
+		        }
+		        roundInput.value = nextRaceId;
+		    } catch (err) {
+		        console.error('Error getting next race ID:', err);
+		        roundInput.value = '';
+		    }
+		}
+
+        // ==========================================
+        // POINTS & ROUND HELPER FUNCTIONS
+        // ==========================================
+        function calculatePoints(position, systemType) {
+            if (systemType === 'none') {
+                return 0;
+            }
+            if (systemType === 'f1') {
+                const f1PointsMap = { 1: 25, 2: 18, 3: 15, 4: 12, 5: 10, 6: 8, 7: 6, 8: 4, 9: 2, 10: 1 };
+                return f1PointsMap[position] || 0;
+            }
+            const imsaPointsMap = {
+                1: 350, 2: 320, 3: 300, 4: 280, 5: 260, 
+                6: 250, 7: 240, 8: 230, 9: 220, 10: 210, 
+                11: 200, 12: 190, 13: 180, 14: 170, 15: 160, 
+                16: 150, 17: 140, 18: 130, 19: 120, 20: 110, 
+                21: 100, 22: 90,  23: 80,  24: 70,  25: 60,  
+                26: 50,  27: 40,  28: 30,  29: 20,  30: 10,
+                31: 9, 32: 8, 33: 7, 34: 6, 35: 5, 36: 4,
+                37: 3, 38: 2, 39: 1
+            };
+            return imsaPointsMap[position] || 0;
+        }
+        
+        document.getElementById('championshipSelect').addEventListener('change', () => {
+		    setNextRoundId();
+		});
+        
+        async function setNextRoundId() {
+		    const champId = document.getElementById('championshipSelect').value;
+		    const roundInput = document.getElementById('raceInput');
+
+		    if (!champId) {
+		        roundInput.value = '';
+		        return;
+		    }
+				
+				// get next round number
+		    try {
+		        const { data, error } = await supabaseClient
+		            .from('champresults')
+		            .select('raceid')
+		            .eq('championshipid', champId)
+		            .order('raceid', { ascending: false })
+		            .limit(1);
+
+		        if (error) throw error;
+
+		        let nextRoundId = 1;
+		        if (data && data.length > 0 && data[0].raceid != null) {
+		            nextRoundId = parseInt(data[0].raceid, 10) + 1;
+		        }
+		        roundInput.value = nextRoundId;
+		    } catch (err) {
+		        console.error('Error getting next Round ID:', err);
+		        roundInput.value = '';
+		    }
+		    
+		    
+		}
+
+        // ==========================================
+        // 3. UPLOAD JSON RACE RESULTS LOGIC
+        // ==========================================
+        document.getElementById('uploadBtn').addEventListener('click', async () => {
+            const championshipSelect = document.getElementById('championshipSelect').value;
+            const raceInput = document.getElementById('raceInput').value.trim();
+            const pointsSystem = document.getElementById('pointsSystemSelect').value;
+            const selectedEntryListId = document.getElementById('uploadEntryListSelect').value;
+            const fileInput = document.getElementById('jsonFile');
+            const statusDiv = document.getElementById('uploadStatus');
+
+            if (!championshipSelect) { alert('Please select a championship.'); return; }
+            if (!raceInput) { alert('Please enter a race identifier (e.g., Race 1).'); return; }
+            if (fileInput.files.length === 0) { alert('Please select a JSON file first.'); return; }
+
+            const file = fileInput.files[0];
+            const sessionName = file.name; 
+            const reader = new FileReader();
+
+            statusDiv.style.color = '#e2e8f0';
+            statusDiv.innerText = 'Processing JSON file...';
+
+            reader.onload = async function(event) {
+                try {
+                    const decoder = new TextDecoder('utf-16le');
+                    const text = decoder.decode(event.target.result);
+                    const jsonData = JSON.parse(text);
+                    
+                    const leaderBoardLines = jsonData.sessionResult?.leaderBoardLines;
+                    if (!leaderBoardLines || !Array.isArray(leaderBoardLines)) {
+                        throw new Error('Invalid JSON structure: "leaderBoardLines" not found.');
+                    }
+                    
+                    // Prevent uploading the same JSON file more than once
+										const { data: existingSession, error: checkError } = await supabaseClient
+										    .from('champresults')
+										    .select('session_id')
+										    .eq('session_id', sessionName)
+										    .limit(1);
+
+										if (checkError) {
+										    throw new Error('Could not check existing results: ' + checkError.message);
+										}
+
+										if (existingSession && existingSession.length > 0) {
+										    throw new Error(`Results already exist for "${sessionName}". Upload cancelled.`);
+										}
+                    
+                    // Identify drivers who appear more than once in the JSON
+										const playerIdCounts = {};
+
+										leaderBoardLines.forEach(line => {
+										    const playerId =
+										        line.car?.drivers?.[0]?.playerId ||
+										        line.currentDriver?.playerId;
+
+										    if (playerId) {
+										        playerIdCounts[playerId] = (playerIdCounts[playerId] || 0) + 1;
+										    }
+										});
+
+										// Exclude ALL entries belonging to drivers who appear more than once
+										const duplicatePlayerIds = new Set(
+										    Object.entries(playerIdCounts)
+										        .filter(([playerId, count]) => count > 1)
+										        .map(([playerId]) => playerId)
+										);
+
+										// 1. Existing duplicate check...
+										const filteredLeaderboardLines = leaderBoardLines.filter(line => {
+										    const playerId = line.car?.drivers?.[0]?.playerId || line.currentDriver?.playerId;
+										    return !playerId || !duplicatePlayerIds.has(playerId);
+										});
+
+										// 2. Define minimum race completion time threshold (e.g., 60 minutes = 3,600,000 ms)
+										// Or make it dynamic based on the winner's total time (e.g., at least 50% of the winner's time)
+										const winnerTotalTime = filteredLeaderboardLines[0]?.timing?.totalTime || 0;
+										const minTimeThreshold = winnerTotalTime * 0.5; // Example: Must complete at least half the winner's duration
+
+										const scoringLinesFiltered = filteredLeaderboardLines.filter(line => {
+										    const totalTime = Number(line.timing?.totalTime) || 0;
+										    
+										    // Check if they hit the max integer (true DNF / 2147483647) 
+										    // OR if their total race time falls far short of a completed run
+										    if (totalTime === 2147483647 || totalTime < minTimeThreshold) {
+										        return false;
+										    }
+										    return true;
+										});
+
+										// 3. Slice to your top scoring entries
+										const scoringLinesAfterDuplicates = scoringLinesFiltered.slice(0, 39);
+
+                    const trackName = jsonData.track || jsonData.trackName || jsonData.metaData?.track || 'Unknown Track';
+                    const isWetSession = jsonData.isWetSession === 1 ? 'Wet' : 'Dry';
+                    const postRacePenalties = jsonData.post_race_penalties || [];
+
+                    const resultsToInsert = scoringLinesAfterDuplicates.map((line, index) => {
+                        const driver = line.car?.drivers?.[0] || {};
+                        const firstName = driver.firstName || '';
+                        const lastName = driver.lastName || '';
+                        const driverName = `${firstName} ${lastName}`.trim();
+                        const driverId = driver.playerId || '';
+                        const timing = line.timing || {};
+                        const finalPos = index + 1;
+                        const carId = line.car?.carId;
+
+                        const matchedPenalty = postRacePenalties.find(p => 
+                            p.carId === carId && p.driverIndex === 0
+                        );
+
+                        return {
+                            driver_name: driverName || 'Unknown Driver',
+                            car_model: String(line.car?.carModel ?? '0'),
+                            track: trackName,
+                            best_lap_ms: timing.bestLap ?? 0,
+                            total_time_ms: timing.totalTime ?? 0,
+                            penalty_time: matchedPenalty ? (matchedPenalty.penaltyValue ?? 0) : 0,
+                            session_id: sessionName,
+                            wetlap: isWetSession,
+                            best_splits: timing.bestSplits || [],
+                            final_position: finalPos, 
+                            championshipid: championshipSelect, 
+                            raceid: raceInput,
+                            rpoints: calculatePoints(finalPos, pointsSystem),
+                            driversid: driverId
+                        };
+                    });
+
+                    statusDiv.innerText = 'Clearing existing session records & uploading...';
+
+                    const { error: deleteError } = await supabaseClient
+                       .from('champresults')
+                        .delete()
+                        .eq('session_id', sessionName);
+
+                    if (deleteError) throw deleteError;
+
+                    const { error: insertError } = await supabaseClient
+                        .from('champresults')
+                        .insert(resultsToInsert);
+
+                    if (insertError) throw insertError;
+
+                    statusDiv.innerText = 'Updating driver entry-lists... please wait.';
+                    const currentChampIdInt = parseInt(championshipSelect, 10);
+                    const uploadListIdInt = selectedEntryListId ? parseInt(selectedEntryListId, 10) : null;
+
+                    for (const line of scoringLinesAfterDuplicates) {
+                        const driver = line.car?.drivers?.[0] || {};
+                        const driverName = `${driver.firstName || ''} ${driver.lastName || ''}`.trim() || 'Unknown Driver';
+                        const driverId = driver.playerId || '';
+                        const nationality = driver.nationality ?? 0;
+
+                        if (!driverId) continue;
+
+                        const { data: existingDrivers, error: fetchDriverErr } = await supabaseClient
+                            .from('driverlist')
+                            .select('*')
+                            .eq('driversid', driverId)
+                            .limit(1);
+
+                        if (fetchDriverErr) {
+                            console.error('Error fetching driver from driverlist:', fetchDriverErr);
+                            continue;
+                        }
+
+                        if (existingDrivers && existingDrivers.length > 0) {
+                            const existingRecord = existingDrivers[0];
+                            let champIds = existingRecord.championshipids || [];
+                            if (!Array.isArray(champIds)) champIds = [];
+
+                            if (!champIds.includes(currentChampIdInt) && !champIds.includes(String(currentChampIdInt))) {
+                                champIds.push(currentChampIdInt);
+                            }
+
+                            let listIds = existingRecord.listids || [];
+                            if (!Array.isArray(listIds)) listIds = [];
+
+                            if (uploadListIdInt !== null && !listIds.includes(uploadListIdInt) && !listIds.includes(String(uploadListIdInt))) {
+                                listIds.push(uploadListIdInt);
+                            }
+
+                            await supabaseClient
+                                .from('driverlist')
+                                .update({
+                                    driver_name: driverName,
+                                    nationality: nationality,
+                                    championshipids: champIds,
+                                    listids: listIds
+                                })
+                                .eq('driversid', driverId);
+                        } else {
+                            let initialListIds = [];
+                            if (uploadListIdInt !== null) {
+                                initialListIds.push(uploadListIdInt);
+                            }
+
+                            await supabaseClient
+                                .from('driverlist')
+                                .insert([{
+                                    driver_name: driverName,
+                                    nationality: nationality,
+                                    driversid: driverId,
+                                    championshipids: [currentChampIdInt],
+                                    listids: initialListIds
+                                }]);
+                        }
+                    }
+
+                    statusDiv.style.color = '#68d391';
+                    statusDiv.innerText = `Results Successfully uploaded!`;
+                    
+                    document.getElementById('championshipSelect').value = '';
+                    document.getElementById('raceInput').value = '';
+                    document.getElementById('pointsSystemSelect').value = 'imsa';
+                    document.getElementById('uploadEntryListSelect').value = '';
+                    document.getElementById('jsonFile').value = '';
+                    document.getElementById('fileNameDisplay').textContent = 'No file chosen';
+                    document.getElementById('fileNameDisplay').style.color = '#a0aec0';
+
+                    refreshAllData();
+
+                } catch (err) {
+                    console.error(err);
+                    statusDiv.style.color = '#fc8181';
+                    statusDiv.innerText = 'Error: ' + err.message;
+                }
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+
+        // ==========================================
+        // 4. UPLOADED RACES / SESSIONS MANAGEMENT
+        // ==========================================
+        async function loadUploadedRaces() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('champresults')
+                    .select('session_id, raceid, championshipid, track')
+                    .order('id', { ascending: true });
+
+                if (error) throw error;
+                allUploadedSessionsData = data || [];
+                onManageChampChange();
+            } catch (err) {
+                console.error('Error loading uploaded races:', err);
+            }
+        }
+
+        function onManageLeagueChange() {
+            const leagueId = document.getElementById('manageLeagueSelect').value;
+            const champDropdown = document.getElementById('manageChampSelect');
+            const sessionDropdown = document.getElementById('sessionSelectDropdown');
+
+            champDropdown.innerHTML = '<option value="">-- Select Championship --</option>';
+            sessionDropdown.innerHTML = '<option value="">-- First select a championship --</option>';
+            sessionDropdown.disabled = true;
+            document.getElementById('sessionEditorContainer').classList.add('hidden');
+            document.getElementById('sessionEditBox').style.display = 'none';
+
+            if (!leagueId) {
+                champDropdown.disabled = true;
+                return;
+            }
+
+            const filteredChamps = allChampionshipsData.filter(c => String(c.league_id) === String(leagueId));
+            if (filteredChamps.length > 0) {
+                champDropdown.disabled = false;
+                filteredChamps.forEach(champ => {
+                    const champLabel = `${champ.championship_name} - Season ${champ.season}`;
+                    const option = document.createElement('option');
+                    option.value = champ.id;
+                    option.textContent = champLabel;
+                    champDropdown.appendChild(option);
+                });
+            } else {
+                champDropdown.innerHTML = '<option value="">No championships found for this league</option>';
+                champDropdown.disabled = true;
+            }
+        }
+
+        function onManageChampChange() {
+            const champId = document.getElementById('manageChampSelect').value;
+            const dropdown = document.getElementById('sessionSelectDropdown');
+            const currentSelectedVal = dropdown.value;
+
+            dropdown.innerHTML = '<option value="">-- Select a Race Session to Manage --</option>';
+            document.getElementById('sessionEditorContainer').classList.add('hidden');
+            document.getElementById('sessionEditBox').style.display = 'none';
+
+            if (!champId) {
+                dropdown.disabled = true;
+                return;
+            }
+
+            const filteredSessions = allUploadedSessionsData.filter(row => String(row.championshipid) === String(champId));
+
+            if (filteredSessions.length > 0) {
+                dropdown.disabled = false;
+                const uniqueSessions = {};
+                filteredSessions.forEach(row => {
+                    if (!uniqueSessions[row.session_id]) {
+                        uniqueSessions[row.session_id] = row;
+                    }
+                });
+
+                const sessionsArray = Object.values(uniqueSessions);
+                sessionsArray.forEach(session => {
+                    const friendlyTrack = getTrackName(session.track);
+                    const label = `Race #${session.raceid} | Track: ${friendlyTrack}`;
+
+                    const option = document.createElement('option');
+                    option.value = session.session_id;
+                    option.textContent = label;
+                    dropdown.appendChild(option);
+                });
+
+                if (currentSelectedVal && uniqueSessions[currentSelectedVal]) {
+                    dropdown.value = currentSelectedVal;
+                }
+            } else {
+                dropdown.innerHTML = '<option value="">No uploaded sessions found for this championship</option>';
+                dropdown.disabled = true;
+            }
+        }
+
+        async function onSessionDropdownChange() {
+            const sessionId = document.getElementById('sessionSelectDropdown').value;
+            const editorContainer = document.getElementById('sessionEditorContainer');
+            const tbody = document.getElementById('sessionDriversTableBody');
+            document.getElementById('sessionEditBox').style.display = 'none';
+
+            if (!sessionId) {
+                editorContainer.classList.add('hidden');
+                activeSessionRecordMeta = null;
+                return;
+            }
+
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Loading drivers for session...</td></tr>';
+            editorContainer.classList.remove('hidden');
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('champresults')
+                    .select('*')
+                    .eq('session_id', sessionId)
+                    .order('final_position', { ascending: true });
+
+                if (error) throw error;
+
+                currentSessionDrivers = data || [];
+                if (currentSessionDrivers.length > 0) {
+                    activeSessionRecordMeta = currentSessionDrivers[0];
+                }
+
+                renderSessionDriversTable();
+            } catch (err) {
+                console.error('Error fetching session drivers:', err);
+                tbody.innerHTML = '<tr><td colspan="5" style="color:#fc8181; text-align: center;">Error loading driver records.</td></tr>';
+            }
+        }
+
+        function renderSessionDriversTable() {
+            const tbody = document.getElementById('sessionDriversTableBody');
+            tbody.innerHTML = '';
+
+            if (currentSessionDrivers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">No drivers found in this session.</td></tr>';
+                return;
+            }
+
+            currentSessionDrivers.forEach((driver, index) => {
+                const friendlyCarName = getCarModelName(driver.car_model);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${escapeHtml(driver.driver_name)}</strong></td>
+                    <td>${escapeHtml(friendlyCarName)}</td>
+                    <td>
+                        <input type="number" class="form-input pos-input" data-index="${index}" value="${driver.final_position ?? ''}" min="1">
+                    </td>
+                    <td>
+                        <input type="number" class="form-input pts-input" data-index="${index}" value="${driver.rpoints ?? 0}">
+                    </td>
+                     <td>
+                        <input type="number" class="form-input plt-input" data-index="${index}" value="${driver.penalty_time ?? 0}">
+                    </td>
+                    <td style="text-align: right;">
+                        <button class="btn-warning btn-sm" onclick="updateSingleDriver(${driver.id}, ${index})">Save</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        async function updateSingleDriver(recordId, arrayIndex) {
+            const trs = document.querySelectorAll('#sessionDriversTableBody tr');
+            const row = trs[arrayIndex];
+            if (!row) return;
+
+            const newPos = parseInt(row.querySelector('.pos-input').value, 10);
+            const newPts = parseInt(row.querySelector('.pts-input').value, 10);
+            const newPlt = parseInt(row.querySelector('.plt-input').value, 10);
+
+            try {
+                const { error } = await supabaseClient
+                    .from('champresults')
+                    .update({ final_position: newPos, rpoints: newPts, penalty_time: newPlt })
+                    .eq('id', recordId);
+
+                if (error) throw error;
+                alert('Driver position and points updated successfully!');
+                
+                currentSessionDrivers[arrayIndex].final_position = newPos;
+                currentSessionDrivers[arrayIndex].rpoints = newPts;
+            } catch (err) {
+                console.error('Error updating driver record:', err);
+                alert('Failed to update driver record: ' + err.message);
+            }
+        }
+
+        document.getElementById('editSessionMetaBtn').addEventListener('click', () => {
+            if (!activeSessionRecordMeta) return;
+            document.getElementById('editOriginalSessionId').value = activeSessionRecordMeta.session_id;
+            document.getElementById('editSessionIdInput').value = activeSessionRecordMeta.session_id;
+            document.getElementById('editRaceIdInput').value = activeSessionRecordMeta.raceid;
+            document.getElementById('editSessionChampionshipSelect').value = activeSessionRecordMeta.championshipid;
+            document.getElementById('sessionEditBox').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('sessionEditBox').offsetTop - 50, behavior: 'smooth' });
+        });
+
+        document.getElementById('updateSessionBtn').addEventListener('click', async () => {
+            const originalSessionId = document.getElementById('editOriginalSessionId').value;
+            const newSessionId = document.getElementById('editSessionIdInput').value.trim();
+            const newRaceId = document.getElementById('editRaceIdInput').value.trim();
+            const newChampionshipId = document.getElementById('editSessionChampionshipSelect').value;
+
+            if (!newSessionId) { alert('Session ID cannot be empty.'); return; }
+            if (!newRaceId) { alert('Race identifier cannot be empty.'); return; }
+            if (!newChampionshipId) { alert('Please select a championship.'); return; }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('champresults')
+                    .update({ 
+                        session_id: newSessionId, 
+                        raceid: newRaceId, 
+                        championshipid: newChampionshipId 
+                    })
+                    .eq('session_id', originalSessionId);
+
+                if (error) throw error;
+                alert('Session records updated successfully!');
+                document.getElementById('sessionEditBox').style.display = 'none';
+                await refreshAllData();
+                document.getElementById('sessionSelectDropdown').value = newSessionId;
+                onSessionDropdownChange();
+            } catch (err) {
+                alert('Error updating session records: ' + err.message);
+            }
+        });
+
+        // ==========================================
+        // 5. DRIVER ENTRY-LIST MANAGEMENT LOGIC
+        // ==========================================
+        async function loadEntryLists() {
+            const tbody = document.getElementById('entryListsTableBody');
+            const uploadSelect = document.getElementById('uploadEntryListSelect');
+            const champSelect = document.getElementById('championshipEntryListSelect');
+            const editChampSelect = document.getElementById('editChampionshipEntryListSelect');
+            
+            const currentUploadSelVal = uploadSelect.value;
+            const currentChampSelVal = champSelect ? champSelect.value : '';
+            const currentEditChampSelVal = editChampSelect ? editChampSelect.value : '';
+
+            try {
+                const { data, error } = await supabaseClient
+                    .from('entrylists')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) throw error;
+                allEntryListsData = data || [];
+                tbody.innerHTML = '';
+
+                const defaultOptHtml = '<option value="">-- None --</option>';
+                uploadSelect.innerHTML = defaultOptHtml;
+                if (champSelect) champSelect.innerHTML = defaultOptHtml;
+                if (editChampSelect) editChampSelect.innerHTML = defaultOptHtml;
+
+                if (allEntryListsData.length > 0) {
+                    allEntryListsData.forEach(list => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>${escapeHtml(list.entrylistname)}</td>
+                            <td class="actions" style="text-align:right;">
+                                <button class="btn-warning btn-sm" onclick="populateEditEntryList(${list.id}, '${escapeQuote(list.entrylistname)}')">Edit</button>
+                                <button class="btn-danger btn-sm" onclick="deleteEntryList(${list.id})">Delete</button>
+                            </td>
+                        `;
+                        tbody.appendChild(tr);
+
+                        const opt1 = document.createElement('option');
+                        opt1.value = list.id;
+                        opt1.textContent = list.entrylistname;
+                        uploadSelect.appendChild(opt1);
+
+                        if (champSelect) {
+                            const opt2 = document.createElement('option');
+                            opt2.value = list.id;
+                            opt2.textContent = list.entrylistname;
+                            champSelect.appendChild(opt2);
+                        }
+
+                        if (editChampSelect) {
+                            const opt3 = document.createElement('option');
+                            opt3.value = list.id;
+                            opt3.textContent = list.entrylistname;
+                            editChampSelect.appendChild(opt3);
+                        }
+                    });
+
+                    if (currentUploadSelVal) uploadSelect.value = currentUploadSelVal;
+                    if (currentChampSelVal && champSelect) champSelect.value = currentChampSelVal;
+                    if (currentEditChampSelVal && editChampSelect) editChampSelect.value = currentEditChampSelVal;
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">No entry lists found.</td></tr>';
+                }
+            } catch (err) {
+                console.error('Error loading entry lists:', err);
+                tbody.innerHTML = '<tr><td colspan="3" style="color:#fc8181; text-align: center;">Error loading entry lists.</td></tr>';
+            }
+        }
+
+        document.getElementById('addEntryListBtn').addEventListener('click', async () => {
+            const nameInput = document.getElementById('entrylistNameInput');
+            const listName = nameInput.value.trim();
+            const statusDiv = document.getElementById('entryListStatus');
+
+            if (!listName) { alert('Please enter an entry list name.'); return; }
+
+            statusDiv.style.color = '#e2e8f0';
+            statusDiv.innerText = 'Creating entry list...';
+
+            try {
+                const { error } = await supabaseClient
+                    .from('entrylists')
+                    .insert([{ entrylistname: listName }]);
+
+                if (error) throw error;
+
+                statusDiv.style.color = '#68d391';
+                statusDiv.innerText = 'Entry list created successfully!';
+                nameInput.value = '';
+                await loadEntryLists();
+                await loadDriversList();
+            } catch (err) {
+                statusDiv.style.color = '#fc8181';
+                statusDiv.innerText = 'Error: ' + err.message;
+            }
+        });
+
+        window.populateEditEntryList = function(id, name) {
+            document.getElementById('editEntryListId').value = id;
+            document.getElementById('editEntryListNameInput').value = name;
+            document.getElementById('entryListEditBox').style.display = 'block';
+            window.scrollTo({ top: document.getElementById('entryListEditBox').offsetTop - 50, behavior: 'smooth' });
+        };
+
+        document.getElementById('updateEntryListBtn').addEventListener('click', async () => {
+            const id = document.getElementById('editEntryListId').value;
+            const newName = document.getElementById('editEntryListNameInput').value.trim();
+
+            if (!newName) { alert('Entry list name cannot be empty.'); return; }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('entrylists')
+                    .update({ entrylistname: newName })
+                    .eq('id', id);
+
+                if (error) throw error;
+                alert('Entry list updated successfully!');
+                document.getElementById('entryListEditBox').style.display = 'none';
+                await loadEntryLists();
+                await loadDriversList();
+            } catch (err) {
+                alert('Error updating entry list: ' + err.message);
+            }
+        });
+
+        window.deleteEntryList = async function(id) {
+            if (!confirm('Are you sure you want to delete this entry list? This will remove the entry list ID from all drivers list assignments.')) return;
+
+            try {
+                const { data: driversData, error: driverFetchErr } = await supabaseClient
+                    .from('driverlist')
+                    .select('driversid, listids');
+
+                if (driverFetchErr) throw driverFetchErr;
+
+                if (driversData && driversData.length > 0) {
+                    for (const driver of driversData) {
+                        let listIdsArray = driver.listids || [];
+                        if (!Array.isArray(listIdsArray)) continue;
+
+                        const updatedListIds = listIdsArray.filter(
+                            lId => String(lId) !== String(id) && Number(lId) !== Number(id)
+                        );
+
+                        if (updatedListIds.length !== listIdsArray.length) {
+                            await supabaseClient
+                                .from('driverlist')
+                                .update({ listids: updatedListIds })
+                                .eq('driversid', driver.driversid);
+                        }
+                    }
+                }
+
+                const { error } = await supabaseClient.from('entrylists').delete().eq('id', id);
+                if (error) throw error;
+
+                alert('Entry list and all associated driver assignments deleted successfully!');
+                await loadEntryLists();
+                await loadDriversList();
+            } catch (err) {
+                console.error('Error deleting entry list and cascading records:', err);
+                alert('Error deleting entry list: ' + err.message);
+            }
+        };
+
+        async function loadDriversList() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('driverlist')
+                    .select('*')
+                    .order('driver_name', { ascending: true });
+
+                if (error) throw error;
+                allDriversData = data || [];
+                renderDriversTable();
+            } catch (err) {
+                console.error('Error loading drivers:', err);
+                document.getElementById('driverListTableBody').innerHTML = '<tr><td colspan="4" style="color:#fc8181; text-align: center;">Error loading drivers list.</td></tr>';
+            }
+        }
+
+        function onDriverSearchInput() {
+            driverSearchQuery = document.getElementById('driverSearchInput').value.trim().toLowerCase();
+            currentDriverPage = 1;
+            renderDriversTable();
+        }
+
+        function renderDriversTable() {
+            const tbody = document.getElementById('driverListTableBody');
+            tbody.innerHTML = '';
+
+            const matchingEntryListIds = allEntryListsData
+                .filter(el => (el.entrylistname || '').toLowerCase().includes(driverSearchQuery))
+                .map(el => el.id);
+
+            const filteredDrivers = allDriversData.filter(driver => {
+                const name = (driver.driver_name || '').toLowerCase();
+                const steamId = (driver.driversid || '').toLowerCase();
+                
+                const matchesBasic = name.includes(driverSearchQuery) || steamId.includes(driverSearchQuery);
+
+                let assignedLists = driver.listids || [];
+                if (!Array.isArray(assignedLists)) assignedLists = [];
+                const matchesEntryList = matchingEntryListIds.some(listId => 
+                    assignedLists.includes(listId) || assignedLists.includes(String(listId))
+                );
+
+                return matchesBasic || (driverSearchQuery !== '' && matchesEntryList);
+            });
+
+            const totalPages = Math.ceil(filteredDrivers.length / driversPerPage) || 1;
+            if (currentDriverPage > totalPages) currentDriverPage = totalPages;
+            if (currentDriverPage < 1) currentDriverPage = 1;
+
+            const startIndex = (currentDriverPage - 1) * driversPerPage;
+            const endIndex = startIndex + driversPerPage;
+            const paginatedDrivers = filteredDrivers.slice(startIndex, endIndex);
+
+            document.getElementById('driverPageIndicator').textContent = `Page ${currentDriverPage} of ${totalPages} (Total: ${filteredDrivers.length} drivers)`;
+            document.getElementById('prevPageBtn').disabled = currentDriverPage === 1;
+            document.getElementById('nextPageBtn').disabled = currentDriverPage === totalPages;
+
+            if (paginatedDrivers.length > 0) {
+                paginatedDrivers.forEach((driver) => {
+                    let assignedLists = driver.listids || [];
+                    if (!Array.isArray(assignedLists)) assignedLists = [];
+
+                    let checkboxesHtml = '<div style="display: flex; flex-wrap: wrap; gap: 10px;">';
+                    if (allEntryListsData.length > 0) {
+                        allEntryListsData.forEach(el => {
+                            const isChecked = assignedLists.includes(el.id) || assignedLists.includes(String(el.id));
+                            checkboxesHtml += `
+                                <label style="display: inline-flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; color: var(--text-light);">
+                                    <input type="checkbox" class="driver-el-chk" data-driverid="${driver.driversid}" data-listid="${el.id}" ${isChecked ? 'checked' : ''} onchange="updateLocalDriverList(this, '${driver.driversid}', ${el.id})">
+                                    ${escapeHtml(el.entrylistname)}
+                                </label>
+                            `;
+                        });
+                    } else {
+                        checkboxesHtml += '<span style="color: var(--text-muted); font-size: 12px;">No entry lists created yet</span>';
+                    }
+                    checkboxesHtml += '</div>';
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${escapeHtml(driver.driver_name)}</strong></td>
+                        <td>${escapeHtml(driver.driversid || 'N/A')}</td>
+                        <td>${checkboxesHtml}</td>
+                        <td class="actions" style="text-align:right;">
+                            <button class="btn-danger btn-sm" onclick="deleteDriver('${escapeQuote(driver.driversid)}')">Delete</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } else {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No matching drivers found.</td></tr>';
+            }
+        }
+
+        function changeDriverPage(direction) {
+            currentDriverPage += direction;
+            renderDriversTable();
+        }
+
+        window.updateLocalDriverList = async function(checkboxElem, driverSteamId, listId) {
+            const driver = allDriversData.find(d => String(d.driversid) === String(driverSteamId));
+            if (!driver) return;
+
+            let listIds = driver.listids || [];
+            if (!Array.isArray(listIds)) listIds = [];
+            
+            const targetId = parseInt(listId, 10);
+
+            if (checkboxElem.checked) {
+                if (!listIds.includes(targetId) && !listIds.includes(String(targetId))) {
+                    listIds.push(targetId);
+                }
+            } else {
+                listIds = listIds.filter(id => Number(id) !== targetId && String(id) !== String(targetId));
+            }
+
+            driver.listids = listIds;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('driverlist')
+                    .update({ listids: listIds })
+                    .eq('driversid', driverSteamId);
+
+                if (error) throw error;
+            } catch (err) {
+                console.error('Error auto-saving driver entry lists:', err);
+                alert('Error updating driver entry lists: ' + err.message);
+            }
+        };
+
+        window.deleteDriver = async function(driverSteamId) {
+            if (!confirm(`Are you sure you want to delete this driver and all their associated race results?`)) return;
+
+            try {
+                await supabaseClient.from('champresults').delete().eq('driversid', driverSteamId);
+                const { error: driverError } = await supabaseClient.from('driverlist').delete().eq('driversid', driverSteamId);
+
+                if (driverError) throw driverError;
+
+                alert('Driver and their associated race results deleted successfully!');
+                await refreshAllData();
+            } catch (err) {
+                console.error('Error deleting driver and results:', err);
+                alert('Error deleting driver: ' + err.message);
+            }
+        };
+        
+        function getCarModelName(carModelKey) {
+            if (CAR_MODELS && CAR_MODELS[String(carModelKey)]) {
+                return CAR_MODELS[String(carModelKey)];
+            }
+            return carModelKey;
+        }
+        
+        function getTrackName(trackModelKey) {
+            if (TRACK_NAMES && TRACK_NAMES[String(trackModelKey)]) {
+                return TRACK_NAMES[String(trackModelKey)];
+            }
+            return trackModelKey;
+        }
+
+        async function deleteSelectedSession() {
+            const sessionId = document.getElementById('sessionSelectDropdown').value;
+            if (!sessionId) return;
+
+            if (!confirm(`Are you sure you want to delete session file "${sessionId}" and all its driver records?`)) return;
+
+            try {
+                const { error } = await supabaseClient.from('champresults').delete().eq('session_id', sessionId);
+                if (error) throw error;
+                alert('Session results deleted successfully!');
+                document.getElementById('sessionEditorContainer').classList.add('hidden');
+                refreshAllData();
+            } catch (err) {
+                console.error('Error deleting session:', err);
+                alert('Error deleting session: ' + err.message);
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;');
+        }
+        function escapeQuote(str) {
+            if (!str) return '';
+            return String(str).replace(/'/g, "\\'");
+        }
+    </script>
+</body>
+</html>

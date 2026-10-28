@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACC League & Race Management Dashboard</title>
+    <!-- Include Supabase JS Client via CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+    	:root {
+            --bg-body: #05070b;
+            --bg-card: #0d1117;
+            --bg-card-hover: #161b22;
+            --border-subtle: rgba(56, 189, 248, 0.12);
+            --accent-primary: #38bdf8; /* Electric Cyan */
+            --accent-glow: rgba(56, 189, 248, 0.25);
+            --accent-gold: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --text-light: #cbd5e1;
+		}
+		 hr.rgbhr{
+		    width:100%;
+		    height:1px;
+		    border:none;
+		    background:linear-gradient(to right, #16181f 0%, var(--accent-primary) 50%, #16181f 100%);
+		    }
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 0px auto;
+            padding: 10px;
+            background-color: #12161f;
+            color: #e1e1e6;
+        }
+        .header {
+		    display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		}
+		
+		.logo-link {
+            display: block;
+            width: 100%;
+            max-width: 900px;
+            margin: 0 auto;
+            text-decoration: none;
+            text-align: center;
+		}
+		
+		.logo-text {
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1;
+            border: 1px solid #183542;
+            border-radius: 8px;
+            padding: 18px 0px 16px 0px;
+            margin: 0px 0px 20px 0px;
+		}
+
+		.logo-title {
+            font-size: 36px;
+            font-weight: 800;
+            letter-spacing: 2.5px;
+            padding-bottom: 5px;
+            background: linear-gradient(135deg, #ffffff 0%, #9fb6c9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+		}
+
+		.logo-subtitle {
+		    margin-top: 10px;
+		    font-size: 16px;
+		    font-weight: 700;
+		    letter-spacing: 6px;
+		    color: #49bff5;
+		}
+		.subtitle {
+            margin-top: 10px;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+		}
+
+        h2, h3, h4 {
+            color: #f8f9fa;
+            border-bottom: 2px solid #2b6cb0;
+            padding-bottom: 5px;
+            margin-top: 0px;
+        }
+        h2 {
+            text-align: center;
+            border-bottom: none;
+            color: #63b3ed;
+            margin-bottom: 25px;
+        }
+        
+        /* Navigation Header Styles */
+        .nav-header {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            background: #1a202c;
+            padding: 15px;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .nav-btn {
+            background-color: #2d3748;
+            color: #cbd5e0;
+            border: 1px solid #4a5568;
+            padding: 8px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .nav-btn:hover {
+            background-color: #4a5568;
+            color: #fff;
+        }
+        .nav-btn.active {
+            background-color: #3182ce;
+            color: white;
+            border-color: #3182ce;
+        }
+        .nav-btn2 {
+            background-color: #2d3748;
+            color: #cbd5e0;
+            border: 1px solid #4a5568;
+            padding: 4px 7px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 10px;
+            transition: all 0.2s;
+        }
+
+        .section-box {
+            background: #1a202c;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #2d3748;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .edit-box {
+            background: #202634;
+            border: 1px dashed #d69e2e;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        .edit-box h4 {
+            margin-top: 0;
+            color: #d69e2e;
+            border-bottom: 1px solid #4a5568;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #cbd5e0;
+            font-size: 15px;
+        }
+        select, input[type="email"], input[type="password"], input[type="number"], input[type="datetime-local"] {
+            width: 100%;
+            padding: 9px;
+            box-sizing: border-box;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            background-color: #2d3748;
+            color: #fff;
+        }
+        select:focus, input[type="text"]:focus, input[type="password"]:focus, input[type="number"]:focus, input[type="datetime-local"]:focus {
+            border-color: #63b3ed;
+            outline: none;
+        }
+
+        /* Custom Styled File Picker */
+        .file-upload-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background-color: #2d3748;
+            border: 1px solid #4a5568;
+            border-radius: 4px;
+            padding: 6px 10px;
+        }
+        .file-upload-wrapper input[type="file"] {
+            display: none;
+        }
+        .custom-file-btn {
+            background-color: #4a5568;
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: background 0.2s;
+            border: none;
+        }
+        .custom-file-btn:hover {
+            background-color: #718096;
+        }
+        #fileNameDisplay {
+            font-size: 13px;
+            color: #a0aec0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        button {
+            padding: 9px 15px;
+            background-color: #3182ce;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background-color: #2b6cb0;
+        }
+        button.btn-danger {
+            background-color: #e53e3e;
+        }
+        button.btn-danger:hover {
+            background-color: #c53030;
+        }
+        button.btn-warning {
+            background-color: #d69e2e;
+            color: #1a202c;
+        }
+        button.btn-warning:hover {
+            background-color: #b7791f;
+        }
+        button.btn-secondary {
+            background-color: #4a5568;
+        }
+        button.btn-secondary:hover {
+            background-color: #718096;
+        }
+        button.btn-sm {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background: #2d3748;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        th, td {
+            border: 1px solid #4a5568;
+            padding: 10px;
+            text-align: left;
+            font-size: 14px;
+            color: #e2e8f0;
+        }
+        th {
+            background-color: #202634;
+            color: #63b3ed;
+        }
+        .status-msg {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Pagination Controls */
+        .pagination-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            background: #202634;
+            padding: 10px 15px;
+            border-radius: 6px;
+            border: 1px solid #4a5568;
+        }
+        .pagination-bar span {
+            font-size: 13px;
+            color: var(--text-light);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-subtle);
+            margin-top: 10px;
+            padding-bottom: 11px;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+        .footer-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 12px;
+        }
+        .footer-copy {
+            color: #475569;
+        }
+
+        /* LOGIN MODAL OVERLAY */
+        .loginOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(5, 7, 11, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .login-box {
+            background: #1a202c;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #2d3748;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+        }
+        .login-box h3 {
+            color: #63b3ed;
+            border-bottom: 2px solid #2b6cb0;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+      	/* Compact Admin Checkbox */
+				.checkbox-inline {
+				    display: flex;
+				    align-items: center;
+				    gap: 10px;
+				    margin-bottom: 12px;
+				}
+
+				.checkbox-inline label {
+				    display: inline-block;
+				    margin: 0;
+				    color: #cbd5e0;
+				    font-size: 14px;
+				    cursor: pointer;
+				}
+
+				.checkbox-inline input[type="checkbox"] {
+				    appearance: none;
+				    -webkit-appearance: none;
+				    width: 16px;
+				    height: 16px;
+				    min-width: 16px;
+				    margin: 0;
+				    padding: 0;
+				    border: 1px solid #4a5568;
+				    border-radius: 3px;
+				    background: #2d3748;
+				    cursor: pointer;
+				    display: inline-grid;
+				    place-content: center;
+				    transition: background 0.15s, border-color 0.15s;
+				}
+
+				.checkbox-inline input[type="checkbox"]:hover {
+				    border-color: #63b3ed;
+				}
+
+				.checkbox-inline input[type="checkbox"]:checked {
+				    background: #3182ce;
+				    border-color: #63b3ed;
+				}
+
+				.checkbox-inline input[type="checkbox"]::before {
+				    content: "";
+				    width: 4px;
+				    height: 8px;
+				    border: solid #ffffff;
+				    border-width: 0 2px 2px 0;
+				    transform: rotate(45deg) scale(0);
+				    margin-top: -2px;
+				}
+
+				.checkbox-inline input[type="checkbox"]:checked::before {
+				    transform: rotate(45deg) scale(1);
+				}
+
+				.checkbox-inline input[type="checkbox"]:focus-visible {
+				    outline: 2px solid #63b3ed;
+				    outline-offset: 2px;
+				}
+    </style>
+</head>
+<body>
+
+    <!-- LOGIN OVERLAY -->
+    <div class="loginOverlay" id="auth-forms">
+        <div class="login-box">
+        	<form id="login-form">
+            <h3><span style="color: #ffffff; font-size:18px;">Assetto Corsa Competizione</span><br><span style="font-size:19px;">Community Leaderboard Manager</span></h3>
+            <div class="form-group">
+                <label for="login-email">Email:</label>
+                <input type="email" id="login-email" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <label for="login-password">Password:</label>
+                <input type="password" id="login-password" placeholder="Password" required>
+            </div>
+            <button type="submit" style="width: 100%; margin-top: 10px;">Log In</button>
+            <div id="loginStatus" class="status-msg"></div>
+          </form>
+        <p id="error-msg" style="color: red;"></p>
+        </div>
+    </div>
+    
+
+
+    <script>
+        // Supabase credentials
+        const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
+        const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY_PLACEHOLDER__';
+        
+        const supabase2 = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        
+        
+        
+        // Check if user is already logged in, redirect to dashboard if so
+        async function checkSession() {
+            const { data: { session } } = await supabase2.auth.getSession();
+            if (session) {
+                window.location.href = 'admin.html';
+            }
+        }
+        checkSession();
+        
+        // Handle Login
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+
+            const { data, error } = await supabase2.auth.signInWithPassword({ email, password });
+            
+            if (error) {
+                document.getElementById('error-msg').innerText = error.message;
+            } else {
+                window.location.href = 'admin.html';
+            }
+        });
+
+    </script>
+</body>
+</html>
