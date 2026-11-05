@@ -1,0 +1,1780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACC- Community leaderboard Manager.</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.ico">
+    
+
+ <style>
+
+        /* =========================================================
+           RESET
+        ========================================================= */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family:
+                Inter,
+                "Segoe UI",
+                Roboto,
+                Helvetica,
+                Arial,
+                sans-serif;
+
+            background: radial-gradient(circle at 50% 0%, #0b1220 0%, #090b0e, 45%, #03040a 100%);
+            color: #f4f5f7;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        button {
+            font: inherit;
+        }
+
+
+        /* =========================================================
+           VARIABLES
+        ========================================================= */
+
+        :root {
+            --bg: #090b0e;
+            --bg-light: #0e1115;
+            --panel: #12161b;
+            --panel-hover: #171c22;
+
+            --text: #f4f5f7;
+            --muted: #8e98a5;
+
+            --accent: #00bee8;
+            --accent-dark: #390000;
+
+            --border: rgba(255,255,255,0.08);
+
+            --max-width: 1200px;
+        }
+
+
+        /* =========================================================
+           BACKGROUND EFFECT
+        ========================================================= */
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+
+            pointer-events: none;
+
+            background:
+                linear-gradient(
+                    rgba(255,255,255,0.015) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(255,255,255,0.015) 1px,
+                    transparent 1px
+                );
+
+            background-size: 50px 50px;
+
+            mask-image: linear-gradient(
+                to bottom,
+                black,
+                transparent 70%
+            );
+
+            z-index: -2;
+        }
+
+    
+
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+
+header {
+    position: relative;
+
+    width: 100%;
+    height: 76px;
+
+    display: flex;
+    align-items: center;
+
+    
+
+    z-index: 10;
+}
+
+.nav {
+    width: min(var(--max-width), calc(100% - 40px));
+
+    height: 100%;
+
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+
+/* LOGO */
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.logo-mark {
+    width: 38px;
+    height: 38px;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--accent);
+
+    color: #080a0c;
+
+    font-weight: 950;
+
+    border-radius: 6px;
+
+    transform: skew(-8deg);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+
+    line-height: 1;
+}
+
+.logo-text strong {
+    font-size: 15px;
+}
+
+.logo-text span {
+    margin-top: 4px;
+
+    font-size: 9px;
+
+    color: var(--muted);
+
+    letter-spacing: 2px;
+}
+
+
+/* NAV LINKS */
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+nav a {
+    color: #aab2bc;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+a {
+    color: #aab2bc;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s ease;
+}
+
+a:hover {
+    color: var(--accent);
+}
+
+
+/* DOWNLOAD */
+
+.nav-download {
+    padding: 10px 18px;
+
+    background: #e438c6;
+
+    color: #080a0c !important;
+
+    border-radius: 5px;
+
+    font-weight: 800;
+}
+
+.nav-download:hover {
+    background: #39ffb6;
+
+    transform: translateY(-1px);
+}
+
+        /* =========================================================
+           HERO
+        ========================================================= */
+        
+        .sitelogo {
+
+            width: min(var(--max-width), calc(100% - 40px));
+
+            margin: auto;
+
+            
+            align-items: center;
+
+           
+
+            position: relative;
+        }
+
+        .hero {
+
+            width: min(var(--max-width), calc(100% - 40px));
+
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+
+            padding-top: 40px;
+
+            position: relative;
+        }
+
+        .hero-content {
+            width: 65%;
+
+            position: relative;
+
+            z-index: 2;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+
+            padding: 7px 12px;
+
+            margin-bottom: 25px;
+
+            border: 1px solid #8560ff;
+
+            background: rgba(183,255,50,0.04);
+
+            border-radius: 100px;
+
+            color: #ff26d9;
+
+            font-size: 12px;
+            font-weight: 800;
+
+            letter-spacing: 1.5px;
+
+            text-transform: uppercase;
+        }
+
+        .eyebrow::before {
+            content: "";
+
+            width: 7px;
+            height: 7px;
+
+            background: var(--accent);
+
+            border-radius: 50%;
+
+            box-shadow: 0 0 12px var(--accent);
+        }
+
+        h1 {
+            max-width: 800px;
+
+            font-size: clamp(58px, 8vw, 105px);
+
+            line-height: 0.9;
+
+            letter-spacing: -5px;
+
+            font-weight: 900;
+
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .hero-subtitle {
+            max-width: 620px;
+
+            margin-top: 30px;
+
+            color: var(--muted);
+
+            font-size: 19px;
+
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+
+            align-items: center;
+
+            gap: 14px;
+
+            margin-top: 38px;
+        }
+
+        .button {
+            display: inline-flex;
+
+            align-items: center;
+            justify-content: center;
+
+            min-height: 50px;
+
+            padding: 0 24px;
+
+            border-radius: 7px;
+
+            font-size: 14px;
+            font-weight: 800;
+
+            transition: 0.2s ease;
+
+            cursor: pointer;
+        }
+
+        .button-primary {
+            background: #e537c7;
+
+            color: #080a0c;
+
+            box-shadow:
+                0 0 30px rgba(183,255,50,0.12);
+        }
+
+        .button-primary:hover {
+            background: #39ffb6;
+
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 35px rgba(183,255,50,0.18);
+        }
+
+        .button-secondary {
+            border: 1px solid #39ffb6;
+
+            color: #d9dde2;
+
+            background: rgba(255,255,255,0.025);
+        }
+
+        .button-secondary:hover {
+            border-color: #e537c7;
+
+            color: var(--accent);
+        }
+
+
+        /* =========================================================
+           HERO GRAPHIC
+        ========================================================= */
+
+        .hero-graphic {
+            position: absolute;
+
+            right: -80px;
+            bottom: 70px;
+
+            width: 480px;
+            height: 480px;
+
+            opacity: 0.9;
+
+            pointer-events: none;
+        }
+
+        .circle {
+            position: absolute;
+
+            inset: 0;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(183,255,50,0.12);
+
+            transform: rotate(-15deg);
+        }
+
+        .circle::before,
+        .circle::after {
+            content: "";
+
+            position: absolute;
+
+            inset: 45px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .circle::after {
+            inset: 100px;
+
+            border-color: rgba(183,255,50,0.15);
+        }
+
+        .speed-line {
+            position: absolute;
+
+            height: 2px;
+
+            background: var(--accent);
+
+            opacity: 0.35;
+
+            transform: rotate(-25deg);
+        }
+
+        .speed-line:nth-child(2) {
+            width: 250px;
+            top: 160px;
+            left: 80px;
+        }
+
+        .speed-line:nth-child(3) {
+            width: 170px;
+            top: 205px;
+            left: 150px;
+        }
+
+        .speed-line:nth-child(4) {
+            width: 300px;
+            top: 275px;
+            left: 50px;
+        }
+
+        .speed-line:nth-child(5) {
+            width: 120px;
+            top: 330px;
+            left: 190px;
+        }
+
+        .graphic-center {
+            position: absolute;
+
+            inset: 0;
+
+            display: grid;
+
+            place-items: center;
+        }
+
+        .graphic-center strong {
+            font-size: 110px;
+
+            font-weight: 950;
+
+            color: transparent;
+
+            -webkit-text-stroke: 1px rgba(183,255,50,0.25);
+
+            transform: skew(-10deg);
+
+            letter-spacing: -8px;
+        }
+
+
+        /* =========================================================
+           SECTION
+        ========================================================= */
+
+        section {
+            padding: 60px 20px;
+        }
+
+        .container {
+            width: min(var(--max-width), 100%);
+
+            margin: auto;
+        }
+
+        .section-label {
+            color: var(--accent);
+
+            font-size: 11px;
+
+            font-weight: 900;
+
+            letter-spacing: 2px;
+
+            text-transform: uppercase;
+
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            max-width: 720px;
+
+            font-size: clamp(36px, 5vw, 62px);
+
+            line-height: 1;
+
+            letter-spacing: -2px;
+
+            font-weight: 850;
+        }
+
+        .section-description {
+            max-width: 650px;
+
+            margin-top: 20px;
+
+            color: var(--muted);
+
+            font-size: 17px;
+        }
+
+
+        /* =========================================================
+           FEATURES
+        ========================================================= */
+
+        .features {
+            background: #0b0e12;
+
+            border-top: 1px solid var(--border);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature-grid {
+            margin-top: 55px;
+
+            display: grid;
+
+            grid-template-columns: repeat(3, 1fr);
+
+            gap: 15px;
+        }
+
+        .feature {
+            padding: 30px;
+
+            min-height: 220px;
+
+            background: var(--panel);
+
+            border: 1px solid var(--border);
+
+            border-radius: 10px;
+
+            transition: 0.25s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+
+            background: var(--panel-hover);
+
+            border-color: #e537c7;
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+
+            display: grid;
+            place-items: center;
+
+            margin-bottom: 20px;
+
+            background: #3c2c7c;
+
+            color: var(--accent);
+
+            border-radius: 8px;
+
+            font-size: 20px;
+        }
+
+        .feature h3 {
+            font-size: 18px;
+
+            margin-bottom: 10px;
+        }
+
+        .feature p {
+            color: var(--muted);
+
+            font-size: 14px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =========================================================
+           HOW IT WORKS
+        ========================================================= */
+
+        .steps {
+            margin-top: 65px;
+
+            display: grid;
+
+            grid-template-columns: repeat(4, 1fr);
+
+            gap: 15px;
+        }
+
+        .step {
+            position: relative;
+
+            padding: 30px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .step-number {
+            font-size: 12px;
+
+            font-weight: 900;
+
+            color: var(--accent);
+
+            letter-spacing: 2px;
+
+            margin-bottom: 40px;
+        }
+
+        .step h3 {
+            font-size: 20px;
+
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            color: var(--muted);
+
+            font-size: 14px;
+        }
+
+
+        /* =========================================================
+           BIG STATEMENT
+        ========================================================= */
+
+        .statement {
+            text-align: center;
+
+            padding-top: 150px;
+            padding-bottom: 150px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(183,255,50,0.07),
+                    transparent 50%
+                );
+        }
+
+        .statement h2 {
+            max-width: 950px;
+
+            margin: auto;
+
+            font-size: clamp(42px, 7vw, 88px);
+
+            line-height: 0.95;
+
+            letter-spacing: -4px;
+
+            text-transform: uppercase;
+        }
+
+        .statement h2 span {
+            color: var(--accent);
+        }
+
+        .statement p {
+            max-width: 600px;
+
+            margin: 30px auto 0;
+
+            color: var(--muted);
+
+            font-size: 17px;
+        }
+
+
+        /* =========================================================
+           CTA
+        ========================================================= */
+
+        .cta {
+            padding-top: 80px;
+            padding-bottom: 100px;
+        }
+
+        .cta-box {
+            position: relative;
+
+            overflow: hidden;
+
+            padding: 70px;
+
+            border-radius: 14px;
+
+            background: linear-gradient(
+                135deg,
+                #151a20,
+                #0d1014
+            );
+
+            border: 1px solid var(--border);
+        }
+
+        .cta-box::after {
+            content: "";
+
+            position: absolute;
+
+            width: 300px;
+            height: 300px;
+
+            right: -100px;
+            top: -100px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(183,255,50,0.12);
+        }
+
+        .cta-box h2 {
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 650px;
+
+            font-size: clamp(38px, 5vw, 60px);
+
+            line-height: 1;
+
+            letter-spacing: -2px;
+        }
+
+        .cta-box p {
+            position: relative;
+
+            z-index: 2;
+
+            max-width: 550px;
+
+            margin-top: 18px;
+
+            color: var(--muted);
+        }
+
+        .cta-box .button {
+            position: relative;
+
+            z-index: 2;
+
+            margin-top: 30px;
+        }
+
+
+        /* =========================================================
+           FOOTER
+        ========================================================= */
+
+        footer {
+            padding: 40px 20px;
+
+            border-top: 1px solid var(--border);
+
+            color: var(--muted);
+
+            font-size: 12px;
+        }
+
+        .footer-inner {
+            width: min(var(--max-width), 100%);
+
+            margin: auto;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+        }
+
+        .footer-brand {
+            color: #dce0e4;
+
+            font-weight: 800;
+
+            letter-spacing: 1px;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media (max-width: 900px) {
+
+            nav a:not(.nav-download) {
+                display: none;
+            }
+
+            .hero-content {
+                width: 100%;
+            }
+
+            .hero-graphic {
+                right: -220px;
+                opacity: 0.35;
+            }
+
+            .feature-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .steps {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            header {
+                height: 68px;
+            }
+
+            .nav {
+                width: calc(100% - 28px);
+            }
+
+            .logo-text {
+                display: none;
+            }
+
+            .hero {
+                width: calc(100% - 30px);
+
+             
+
+                padding-top: 100px;
+            }
+
+            h1 {
+                font-size: 58px;
+
+                letter-spacing: -3px;
+            }
+
+            .hero-subtitle {
+                font-size: 16px;
+            }
+
+            .hero-actions {
+                flex-direction: column;
+
+                align-items: stretch;
+            }
+
+            .button {
+                width: 100%;
+            }
+
+            .hero-graphic {
+                width: 350px;
+                height: 350px;
+
+                right: -220px;
+                bottom: 40px;
+            }
+
+            section {
+                padding: 80px 15px;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .steps {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-box {
+                padding: 40px 25px;
+            }
+
+            .footer-inner {
+                flex-direction: column;
+
+                gap: 12px;
+
+                text-align: center;
+            }
+        }
+        /* =========================================================
+           GALLERY / MEDIA SECTION (100% WIDTH STACKED)
+        ========================================================= */
+
+        .media-section {
+            background: #0b0e12;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 60px 0;
+        }
+
+     
+
+        .media-split-container {
+            margin-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr; /* Stacked 100% width boxes */
+            gap: 30px;
+            width: 100%;
+        }
+
+        .video-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            width: 100%; /* 100% width of parent */
+        }
+
+        .video-box h3 {
+            padding: 14px 20px;
+            font-size: 15px;
+            border-bottom: 1px solid var(--border);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .media-container {
+            position: relative;
+            width: 100%;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+            background: #000;
+        }
+
+        .media-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .gallery-box {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            width: 100%; /* 100% width of parent */
+        }
+
+        .gallery-box h3 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .gallery-subtitle {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .thumb-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            width: 100%;
+        }
+
+        .thumb-item {
+            position: relative;
+            aspect-ratio: 16 / 9;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: #000;
+        }
+
+        .thumb-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.25s ease;
+        }
+
+        .thumb-item:hover {
+            border-color: #e537c7;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(229, 55, 199, 0.25);
+        }
+
+        .thumb-item:hover img {
+            transform: scale(1.06);
+        }
+
+        .thumb-caption {
+            position: absolute;
+            bottom: 0;
+            inset-x: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.85));
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 8px 4px 4px 4px;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 900px) {
+            .thumb-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .thumb-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        
+        /* ================ MODAL SLIDER ============================= */
+        .action-btn {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+            border: 1px solid #444;
+            padding: 6px 14px;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+        .action-btn:hover {
+            border-color: #e537c7;
+            color: #e537c7;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background-color: rgba(5, 7, 10, 0.94);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            user-select: none;
+        }
+        .modal-header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .modal-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent);
+            letter-spacing: 1px;
+        }
+        .modal-content {
+            position: relative;
+            max-width: 1100px;
+            width: 100%;
+            max-height: 80vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            display: block;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+        }
+        .nav-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(18, 22, 27, 0.75);
+            color: #fff;
+            border: 1px solid var(--border);
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            z-index: 10;
+        }
+        .nav-arrow:hover {
+            background: #e537c7;
+            color: #000;
+            border-color: #e537c7;
+        }
+        .nav-prev { left: 15px; }
+        .nav-next { right: 15px; }
+
+    </style>
+   
+</head>
+
+
+<body>
+
+
+<!-- =============================================================
+     NAVIGATION
+============================================================= -->
+
+<header>
+	
+	
+
+    <div class="nav">
+
+        <span>
+			<a href="https://www.overtake.gg/downloads/accr-sync-live-hotlap-leaderboard.86363/" target="_blank">
+      <span style="font-size:12px;">Also Available on www.overtake.gg</span>
+      <br>
+      <img src="images/overtake.png" height="24"><br>
+      </a>
+
+        </span>
+
+
+        <nav>
+        	
+        	<!-- <a href="hotlaps.html">Hotlap Live Leaderboard</a> -->
+        	<a href="index.html">ACC Race Host</a>
+        	<a href="#media">Media</a>
+
+            <a href="#features">
+                Features
+            </a>
+
+     
+          
+
+            <a href="https://www.dropbox.com/scl/fi/8spezxetf8m8s7qn0bg45/ACC-CLM.v1.0.zip?rlkey=bk36iizj4zzkqejdauwuvx2ce&st=nzftwu7h&dl=1" class="nav-download">
+                Download ACC-CLM
+            </a>
+
+        </nav>
+
+    </div>
+
+</header>
+
+
+ <div class="sitelogo" style="text-align:center;">
+		   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 950 200" width="100%" height="100%">
+  <defs>
+
+    
+
+
+    <!-- Brand Gradients -->
+    <linearGradient id="cyanGradHoriz" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00f5ff" />
+      <stop offset="100%" stop-color="#00a3e0" />
+    </linearGradient>
+
+    <linearGradient id="magentaGradHoriz" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff007f" />
+      <stop offset="100%" stop-color="#b30059" />
+    </linearGradient>
+
+    <linearGradient id="yellowGradHoriz" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ffe600" />
+      <stop offset="100%" stop-color="#ff9900" />
+    </linearGradient>
+
+    <!-- Glow Filter -->
+    <filter id="neonGlowHoriz" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+  	
+  <!-- Background -->
+  <rect width="950" height="200" fill="url(#bannerBg)" rx="16" />
+
+  <!-- 2px Border -->
+  <rect
+    x="1"
+    y="1"
+    width="948"
+    height="198"
+    rx="16"
+    fill="none"
+    stroke="#2d3748"
+    stroke-width="1"
+  />
+
+
+  <!-- Left Icon Mark (Scaled & Slanted Leaderboard Apex) -->
+  <g transform="translate(46, 11)">
+    <g filter="url(#neonGlowHoriz)">
+      <!-- Vertical Bars -->
+      <polygon points="50,145 75,145 105,55 80,55" fill="url(#cyanGradHoriz)" />
+      <polygon points="90,145 115,145 152,30 127,30" fill="url(#cyanGradHoriz)" />
+      <polygon points="130,145 155,145 185,55 160,55" fill="url(#cyanGradHoriz)" />
+
+      <!-- Racing Speed Slashes -->
+      <polygon points="30,105 180,105 200,85 50,85" fill="url(#magentaGradHoriz)" />
+      <polygon points="20,128 160,128 178,110 38,110" fill="url(#yellowGradHoriz)" />
+    </g>
+
+    <!-- Telemetry Dots -->
+    <circle cx="92.5" cy="42" r="4" fill="#00f5ff" />
+    <circle cx="139.5" cy="18" r="4" fill="#00f5ff" />
+    <circle cx="172.5" cy="42" r="4" fill="#00f5ff" />
+  </g>
+
+
+
+  <!-- Typography Block -->
+  <g transform="translate(22, 0)">
+  <g font-family="&#39;Montserrat&#39;, &#39;Arial Black&#39;, sans-serif" transform="skewX(-10)">
+    <!-- Top Subtitle -->
+    <text x="350" y="75" font-size="20" font-weight="800" fill="#00f5ff" letter-spacing="8">ACC COMMUNITY</text>
+    
+    <!-- Main Title -->
+    <text x="350" y="130" font-size="52" font-weight="900" fill="#ffffff" letter-spacing="3">LEADERBOARD</text>
+    
+    <!-- Telemetry Badge / Accent -->
+    <rect x="760" y="52" width="100" height="22" rx="4" fill="url(#magentaGradHoriz)" />
+    <text x="810" y="67" font-size="11" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="2">LIVE CLM</text>
+  </g>
+
+  <!-- Bottom Accent Line -->
+  <rect x="340" y="148" width="520" height="4" fill="url(#cyanGradHoriz)" rx="2" transform="skewX(-10)" />
+  	
+  	<!-- Top Subtitle -->
+    <text x="552" y="166" font-size="10" font-weight="700" fill="#FA0C8E" letter-spacing="3">LIVE Hotlaps Powered By ACCR-SYNC</text>
+  </g>
+</svg>
+			  </div>
+
+
+<!-- =============================================================
+     HERO
+============================================================= -->
+
+<main>
+	
+	    
+
+    <section class="hero">
+
+        <div class="hero-content">
+
+            <h1>
+                Every<br>
+                Point<br>
+                <span>Counts!</span>
+            </h1>
+
+
+            <p class="hero-subtitle">
+                Bring your ACC community together with a leaderboard that makes racing more competitive, organised and enjoyable.
+            </p>
+
+
+            <div class="hero-actions">
+
+                <a href="https://www.dropbox.com/scl/fi/8spezxetf8m8s7qn0bg45/ACC-CLM.v1.0.zip?rlkey=bk36iizj4zzkqejdauwuvx2ce&st=nzftwu7h&dl=1"
+                   class="button button-primary">
+
+                    DOWNLOAD ACC-CLM
+
+                </a>
+
+           
+        
+
+            </div>
+            <p class="hero-subtitle">Live Preview:</p>
+             <a href="https://communityleaderboard.vercel.app/" target="_blank">https://communityleaderboard.vercel.app/</a>
+            
+
+        </div>
+
+
+
+
+    </section>
+
+    <!-- =========================================================
+         FEATURES
+    ========================================================= -->
+
+    <section class="features" id="features">
+
+        <div class="container">
+
+            <div class="section-label">
+                Why ACC Community Leaderboard Manager?
+            </div>
+
+            <h2 class="section-title">
+                Leaderboards shouldn't be complicated.
+            </h2>
+
+            <p class="section-description">
+                Whether you're running a small group of mates or a busy racing league, everything is in one place. Less time managing spreadsheets and posting results, more time doing what we all came here for – racing!
+            </p>
+
+
+            <div class="feature-grid">
+
+
+           
+
+
+                <article class="feature">
+
+                    <div class="feature-icon">
+                        🏁
+                    </div>
+
+                    <h3>
+                        Championship Management
+                    </h3>
+
+                    <p>
+                        Create and manage multiple leagues, championships and seasons.
+                    </p>
+
+                </article>
+
+
+                <article class="feature">
+
+                    <div class="feature-icon">
+                        👥
+                    </div>
+
+                    <h3>
+                        Hotlap Leaderboard
+                    </h3>
+
+                    <p>
+                        Let drivers compete for bragging rights with an integrated hotlap leaderboard.
+                    </p>
+
+                </article>
+
+
+        
+
+
+                <article class="feature">
+
+                    <div class="feature-icon">
+                        ♥
+                    </div>
+
+                    <h3>
+                        Race Calendar
+                    </h3>
+
+                    <p>
+                        Keep everyone up to date with upcoming races, schedules and event information.
+                    </p>
+
+                </article>
+
+            </div>
+
+        </div>
+
+    </section>
+    
+    <!-- =========================================================
+         SCREENSHOTS & VIDEO SECTION (100% WIDTH STACKED)
+    ============================================================= -->
+
+    <section class="media-section" id="media">
+
+        <div class="container">
+
+            <div class="section-label">
+                See It In Action
+            </div>
+
+            <h2 class="section-title">
+                Screenshots & Video.
+            </h2>
+
+            <p class="section-description">
+                Take a quick look at the user interface and see how easily you can start creating Leagues, Championships & logging the fastest laps set on your server.
+            </p>
+            
+            <p class="section-description">
+                It could not be easier to setup, Everything is copy and paste with a video setup guide where i take you through every step!
+            </p>
+
+            <div class="media-split-container">
+
+                <!-- YouTube Video Box (100% Width) -->
+                <div class="video-box">
+                    <h3>Setup Guide</h3>
+                    <div class="media-container">
+                        <iframe src="https://www.youtube.com/embed/scgZQGCzVNQ" 
+                                title="ACC Race Host Video" 
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+
+                <!-- Compact Gallery Box (100% Width) -->
+                <div class="gallery-box">
+                    <h3>Leaderboard Screenshots</h3>
+                    <div class="gallery-subtitle">Click any image to expand & swipe through</div>
+                    
+<div class="thumb-grid">
+    <div class="thumb-item" onclick="openGallery(0)">
+        <img src="https://i.ibb.co/2YYT5wxz/home-01.png" alt="Home Page">
+        <div class="thumb-caption">Home Page</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(1)">
+        <img src="https://i.ibb.co/v6Z3dqV4/home-02.png" alt="Championship Select">
+        <div class="thumb-caption">Championships</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(2)">
+        <img src="https://i.ibb.co/jjgP8B7/home-03.png" alt="Championship Standings">
+        <div class="thumb-caption">Standings</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(3)">
+        <img src="https://i.ibb.co/YBsQbmTp/home-04.png" alt="Championship Calendar">
+        <div class="thumb-caption">Calendar</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(4)">
+        <img src="https://i.ibb.co/Kj1wBdsy/home-05.png" alt="Individual Race Standings">
+        <div class="thumb-caption">Race Standings</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(5)">
+        <img src="https://i.ibb.co/8ts3twL/home-06.png" alt="Hotlap Track Select">
+        <div class="thumb-caption">Track Select</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(6)">
+        <img src="https://i.ibb.co/GfDMtdDB/home-07.png" alt="Hotlap Results">
+        <div class="thumb-caption">Hotlap Results</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(7)">
+        <img src="https://i.ibb.co/q3m83bFN/home-08.png" alt="Quick Calendars">
+        <div class="thumb-caption">Quick Calendars</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(8)">
+        <img src="https://i.ibb.co/xSVHw7n2/admin-01.png" alt="Admin Login">
+        <div class="thumb-caption">Admin Login</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(9)">
+        <img src="https://i.ibb.co/ZzjXNMvr/admin-02.png" alt="Configuration">
+        <div class="thumb-caption">Admin Configuration</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(10)">
+        <img src="https://i.ibb.co/nNSb6THk/admin-03.png" alt="Leagues">
+        <div class="thumb-caption">Admin Leagues</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(11)">
+        <img src="https://i.ibb.co/KMrQshj/admin-04.png" alt="Championships">
+        <div class="thumb-caption">Admin Championships</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(12)">
+        <img src="https://i.ibb.co/JjqwCBmg/admin-05.png" alt="Race Management">
+        <div class="thumb-caption">Admin Race Management</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(13)">
+        <img src="https://i.ibb.co/tTK6Tbnf/admin-06.png" alt="Calendrs">
+        <div class="thumb-caption">Admin Calendrs</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(14)">
+        <img src="https://i.ibb.co/Y7vztDnK/admin-07.png" alt="Entry Lists">
+        <div class="thumb-caption">Admin Entry Lists</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(15)">
+        <img src="https://i.ibb.co/35ZHsRDL/admin-08.png" alt="Upload Results">
+        <div class="thumb-caption">Admin Upload Results</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(16)">
+        <img src="https://i.ibb.co/TqtTLMZk/cyber-01.png" alt="Cyber Theme Screen 1">
+        <div class="thumb-caption">Cyber Screen 1</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(17)">
+        <img src="https://i.ibb.co/8wm1yHH/cyber-02.png" alt="Cyber Theme Screen 2">
+        <div class="thumb-caption">Cyber Screen 2</div>
+    </div>
+    <div class="thumb-item" onclick="openGallery(18)">
+        <img src="https://i.ibb.co/7d0c4rGL/cyber-03.png" alt="Cyber Theme Screen 3">
+        <div class="thumb-caption">Cyber Screen 3</div>
+    </div>
+</div>
+                        
+                 
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+
+    <!-- =========================================================
+         DOWNLOAD CTA
+    ============================================================= -->
+
+    <section class="cta" id="download">
+
+        <div class="container">
+
+            <div class="cta-box">
+
+                <h2>
+                    Ready to Compete?
+                </h2>
+
+                <p>
+                    Get your Drivers Competing in Live Championships Today!
+                </p>
+
+                <a href="https://www.dropbox.com/scl/fi/8spezxetf8m8s7qn0bg45/ACC-CLM.v1.0.zip?rlkey=bk36iizj4zzkqejdauwuvx2ce&st=nzftwu7h&dl=1"
+                   class="button button-primary">
+
+                    DOWNLOAD ACC-CLM
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- =============================================================
+     GALLERY SWIPE MODAL
+============================================================= -->
+<div class="modal-overlay" id="galleryModal">
+    <div class="modal-header">
+        <div class="modal-title" id="modalTitle">Home Page</div>
+        <button type="button" class="action-btn" id="closeGalleryBtn">✕ CLOSE</button>
+    </div>
+    <div class="modal-content" id="modalContent">
+        <button class="nav-arrow nav-prev" id="prevBtn" aria-label="Previous">❮</button>
+        <img src="" id="modalImg" alt="Gallery Preview">
+        <button class="nav-arrow nav-next" id="nextBtn" aria-label="Next">❯</button>
+    </div>
+</div>
+
+<!-- =============================================================
+     FOOTER
+============================================================= -->
+
+<footer>
+
+    <div class="footer-inner">
+
+        <div class="footer-brand">
+            ACC RACE HOST
+        </div>
+
+        <div>
+            Host. Race. Repeat.
+        </div>
+
+        <div>
+            © 2026 ACC Race Host
+        </div>
+
+    </div>
+
+</footer>
+
+<script>
+    const galleryItems = [
+        { src: 'https://i.ibb.co/2YYT5wxz/home-01.png', title: 'Home Page' },
+        { src: 'https://i.ibb.co/v6Z3dqV4/home-02.png', title: 'Championship Select' },
+        { src: 'https://i.ibb.co/jjgP8B7/home-03.png', title: 'Championship Standings' },
+        { src: 'https://i.ibb.co/YBsQbmTp/home-04.png', title: 'Championship Calendar' },
+        { src: 'https://i.ibb.co/Kj1wBdsy/home-05.png', title: 'Individual Race Standings' },
+        { src: 'https://i.ibb.co/8ts3twL/home-06.png', title: 'Hotlap Track Select' },
+        { src: 'https://i.ibb.co/GfDMtdDB/home-07.png', title: 'Hotlap Results' },
+        { src: 'https://i.ibb.co/q3m83bFN/home-08.png', title: 'Quick Calendars' },
+        { src: 'https://i.ibb.co/xSVHw7n2/admin-01.png', title: 'Admin Login' },
+        { src: 'https://i.ibb.co/ZzjXNMvr/admin-02.png', title: 'Configuration' },
+        { src: 'https://i.ibb.co/nNSb6THk/admin-03.png', title: 'Leagues' },
+        { src: 'https://i.ibb.co/KMrQshj/admin-04.png', title: 'Championships' },
+        { src: 'https://i.ibb.co/JjqwCBmg/admin-05.png', title: 'Race Management' },
+        { src: 'https://i.ibb.co/tTK6Tbnf/admin-06.png', title: 'Calendrs' },
+        { src: 'https://i.ibb.co/Y7vztDnK/admin-07.png', title: 'Entry Lists' },
+        { src: 'https://i.ibb.co/35ZHsRDL/admin-08.png', title: 'Upload Results' },
+        { src: 'https://i.ibb.co/TqtTLMZk/cyber-01.png', title: 'Cyber Theme Screen 1' },
+        { src: 'https://i.ibb.co/8wm1yHH/cyber-02.png', title: 'Cyber Theme Screen 2' },
+        { src: 'https://i.ibb.co/7d0c4rGL/cyber-03.png', title: 'Cyber Theme Screen 3' }
+    ];
+
+    let currentIndex = 0;
+
+    const modal = document.getElementById('galleryModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeBtn = document.getElementById('closeGalleryBtn');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const modalContent = document.getElementById('modalContent');
+
+    function updateModal() {
+        modalImg.src = galleryItems[currentIndex].src;
+        modalTitle.textContent = `${galleryItems[currentIndex].title} (${currentIndex + 1}/${galleryItems.length})`;
+    }
+
+    function openGallery(index) {
+        currentIndex = index;
+        updateModal();
+        modal.style.display = 'flex';
+    }
+
+    function closeGallery() {
+        modal.style.display = 'none';
+    }
+
+    function showNext() {
+        currentIndex = (currentIndex + 1) % galleryItems.length;
+        updateModal();
+    }
+
+    function showPrev() {
+        currentIndex = (currentIndex - 1 + galleryItems.length) % galleryItems.length;
+        updateModal();
+    }
+
+    closeBtn.addEventListener('click', closeGallery);
+    nextBtn.addEventListener('click', (e) => { e.stopPropagation(); showNext(); });
+    prevBtn.addEventListener('click', (e) => { e.stopPropagation(); showPrev(); });
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal || e.target === modalContent) {
+            closeGallery();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (modal.style.display === 'flex') {
+            if (e.key === 'ArrowRight') showNext();
+            if (e.key === 'ArrowLeft') showPrev();
+            if (e.key === 'Escape') closeGallery();
+        }
+    });
+
+    // Touch Swipe Support
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    modalImg.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+    }, false);
+
+    modalImg.addEventListener('touchend', (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+    }, false);
+
+    function handleSwipe() {
+        if (touchEndX < touchStartX - 40) showNext();
+        if (touchEndX > touchStartX + 40) showPrev();
+    }
+</script>
+
+
+</body>
+</html>
