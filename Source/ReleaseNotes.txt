@@ -1,0 +1,9 @@
+ACC Race Host v1.04 Release Notes.
+==================================
+Added force entry list option to Server Setup / Session Rules & Behavior.
+(join Password must be set to force entry list as per kunos server manual)
+
+Added further entry list management.
+------------------------------------
+- Use Custom Entrylist from Dropdown.
+- Import, select, edit and save Custom Entrylists.
